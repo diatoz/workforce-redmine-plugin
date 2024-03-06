@@ -19,6 +19,8 @@ module Workforce
         Workforce::Message.new(self).notify
       rescue => e
         Rails.logger.info "Workfoce Notification Failed"
+        Rails.logger.info e.message
+        Rails.logger.info e.backtrace
       end
     end
   end
