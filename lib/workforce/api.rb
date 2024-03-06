@@ -9,7 +9,13 @@ module Workforce
       request['Protocol'] = "oidc"
       request.content_type = 'application/json'
       request.body = message
+      Workforce::Logger.log message
       response = https.request(request)
+      Workforce::Logger.log "Response #{response.read_body}"
+      raise e
+    rescue => e
+      Workforce::Logger.log "workforce api failed"
+      Workforce::Logger.log e.message
     end
   end
 end
