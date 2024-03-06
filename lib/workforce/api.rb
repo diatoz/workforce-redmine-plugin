@@ -12,7 +12,6 @@ module Workforce
       Workforce::Logger.log message
       response = https.request(request)
       Workforce::Logger.log "Response #{response.read_body}"
-      raise e
     rescue => e
       Workforce::Logger.log "workforce api failed"
       Workforce::Logger.log e.message
