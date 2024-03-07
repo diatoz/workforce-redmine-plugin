@@ -5,7 +5,7 @@ module Workforce
     included do
       has_one :workforce_detail, class_name: "WorkforceConfiguration", through: :project
 
-      after_commit :notify_workforce
+      after_commit :notify_workforce, unless: :workforce_user?
 
       def assignee_email
         assigned_to.try(:mail)
@@ -18,9 +18,11 @@ module Workforce
       def notify_workforce
         Workforce::Message.new(self).notify
       rescue => e
-        Rails.logger.info "Workfoce Notification Failed"
-        Rails.logger.info e.message
-        Rails.logger.info e.backtrace
+        Workforce.logger.error e.message
+      end
+
+      def workforce_user?
+        User.current.mail == workforce_detail.email
       end
     end
   end
