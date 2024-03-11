@@ -10,7 +10,6 @@ module Workforce
       https.use_ssl = true
       request = Net::HTTP::Post.new(url)
       request['X-API-Key'] = data[:api_key]
-      request['Protocol'] = "oidc"
       request['X-Client'] = data[:client]
       request.content_type = 'application/json'
       request.body = data[:message]
