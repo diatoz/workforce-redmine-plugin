@@ -7,7 +7,7 @@ module Workforce
     end
 
     def notify
-      unless source.previous_changes.include?(:id)
+      if source.previous_changes.include?(:id)
         Workforce::Api.notify(
           url: source.workforce_config.url,
           api_key: source.workforce_config.api_key,
