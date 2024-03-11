@@ -8,7 +8,6 @@ Redmine::Plugin.register :workforce do
 
   settings partial: 'settings/workforce_global_settings', default: { email: '', url: '' }
 
-  Project.include Workforce::ProjectPatch
-  Issue.include   Workforce::IssuePatch
-  ProjectsController.send(:helper, Workforce::ProjectSettingTabsPatch)
+  Workforce.apply_patches
+  Workforce.logger = Logger.new(Rails.root.join('log/workforce.log'))
 end

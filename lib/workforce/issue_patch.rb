@@ -3,9 +3,9 @@ module Workforce
     extend ActiveSupport::Concern
 
     included do
-      has_one :workforce_detail, class_name: "WorkforceConfiguration", through: :project
+      has_one :workforce_config, class_name: "WorkforceConfiguration", through: :project
 
-      after_commit :notify_workforce
+      after_commit :notify_workforce, unless: :workforce_user?
 
       def assignee_email
         assigned_to.try(:mail)
@@ -18,7 +18,11 @@ module Workforce
       def notify_workforce
         Workforce::Message.new(self).notify
       rescue => e
-        Rails.logger.info "Workfoce Notification Failed"
+        Workforce.logger.error "Worforce Notification push failed. Reasone: #{e.message}"
+      end
+
+      def workforce_user?
+        User.current.mail == workforce_config.email
       end
     end
   end

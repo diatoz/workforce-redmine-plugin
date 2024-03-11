@@ -5,5 +5,6 @@ en:
   workforce_project_tab: Workforce
   workforce_project_api_key: API Key
   workforce_project_type: Type
+  workforce_project_enable: Enable Workforce
   workforce_settings_update_success: Workforce Project Settings Updated Successfully
   workforce_settings_update_failed: Workforce Project Settings Update Failed
