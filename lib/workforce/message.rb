@@ -7,12 +7,13 @@ module Workforce
     end
 
     def notify
-      Workforce::Api.notify(
-        url: source.workforce_config.url,
-        api_key: source.workforce_config.api_key,
-        client: source.workforce_config.client,
-        message: issue_post_message
-      )
+      unless source.previous_changes.include?(:id)
+        Workforce::Api.notify(
+          url: source.workforce_config.url,
+          api_key: source.workforce_config.api_key,
+          message: issue_post_message
+        )
+      end
     end
 
     def issue_post_message
