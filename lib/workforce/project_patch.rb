@@ -3,7 +3,7 @@ module Workforce
     extend ActiveSupport::Concern
 
     included do
-      has_one :workforce_detail, class_name: "WorkforceConfiguration"
+      has_one :workforce_config, class_name: "WorkforceConfiguration"
     end
   end
 end

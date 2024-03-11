@@ -10,4 +10,8 @@ class WorkforceConfiguration < ActiveRecord::Base
   def email
     Setting.plugin_workforce['email']
   end
+
+  def client
+    Setting.plugin_workforce['client']
+  end
 end

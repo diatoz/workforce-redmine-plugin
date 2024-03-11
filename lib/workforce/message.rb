@@ -7,18 +7,20 @@ module Workforce
     end
 
     def notify
-      url = source.workforce_detail.url
-      key = source.workforce_detail.api_key
-      message = workforce_issue_message
-      Workforce::Api.notify(url, key, message)
+      Workforce::Api.notify(
+        url: source.workforce_config.url,
+        api_key: source.workforce_config.api_key,
+        client: source.workforce_config.client,
+        message: issue_post_message
+      )
     end
 
-    def workforce_issue_message
+    def issue_post_message
       {
         title: source.subject,
         orgId:  "647756f114e71e60dc17d3db",
         description: source.description,
-        reportedByEmail: source.workforce_detail.email,
+        reportedByEmail: source.workforce_config.email,
         reportedById: '65e562ce1d283251fd6602b3',
         primaryAssignee: source.assignee_email,
         otherAssignees: nil,
