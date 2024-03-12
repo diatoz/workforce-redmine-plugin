@@ -1,5 +1,5 @@
 module Workforce
-  VERSION = "0.0.1"
+  VERSION = "1.0.0"
 
   mattr_accessor :logger
 
