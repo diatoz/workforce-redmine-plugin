@@ -14,10 +14,6 @@ module Workforce
       request.content_type = 'application/json'
       request.body = data[:message]
       response = https.request(request)
-      logger.info "workforce api message sent : #{data[:message]}"
-      logger.info "workforce api response #{response.read_body}"
-    rescue => e
-      logger.error e.message
     end
   end
 end

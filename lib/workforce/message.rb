@@ -19,10 +19,8 @@ module Workforce
     def issue_post_message
       {
         title: source.subject,
-        orgId:  "647756f114e71e60dc17d3db",
         description: source.description,
         reportedByEmail: source.workforce_config.email,
-        reportedById: '65e562ce1d283251fd6602b3',
         primaryAssignee: source.assignee_email,
         otherAssignees: nil,
         ticketStatusId: source.status_id,
