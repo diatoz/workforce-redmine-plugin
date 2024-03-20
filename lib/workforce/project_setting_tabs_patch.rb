@@ -5,7 +5,7 @@ module Workforce
         tabs.push(
           {
             name: 'workforce',
-            partial: 'projects/settings/workforce_project_setting_tab',
+            partial: 'workforce/project_settings_tab',
             label: :workforce_project_tab
           }
         )

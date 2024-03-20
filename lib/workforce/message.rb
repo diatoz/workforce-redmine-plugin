@@ -20,21 +20,12 @@ module Workforce
       {
         title: source.subject,
         description: source.description,
-        reportedByEmail: source.workforce_config.email,
-        primaryAssignee: source.assignee_email,
-        otherAssignees: nil,
         ticketStatusId: source.status_id,
         ticketTypeId: source.tracker_id,
         ticketPriorityId: source.priority_id,
-        groupId: nil,
-        tags: nil,
         createdDate: source.created_on.iso8601,
         lastModifiedDate: source.updated_on.iso8601,
         dueDate: source.due_date.try(:iso8601),
-        surveyFormId: nil,
-        surveyFormUrl: nil,
-        categoryId: nil,
-        accountId: nil,
         extRefId: source.id,
         extTktSrc: 'REDMINE'
       }.to_json

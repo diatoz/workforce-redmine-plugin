@@ -18,7 +18,9 @@ module Workforce
       def notify_workforce
         Workforce::Message.new(self).notify
       rescue => e
-        Workforce.logger.error "Worforce Notification push failed. Reasone: #{e.message}"
+        Workforce.logger.error "Exception occured during notifying issue #{self.id}, Reason: #{e.message}"
+        Workforce.logger.error e.backtrace
+        WorkforceAudit.create(source_id: self.id, source_type: self.class, action: 'notification', error_message: e.message, error_backtrace: Rails.backtrace_cleaner.clean(e.backtrace)) rescue nil
       end
 
       def workforce_user?

@@ -1,5 +1,5 @@
-class WorkforceConfigurationsController < ApplicationController
-  before_action :set_project
+class WorkforceController < ApplicationController
+  before_action :set_project, only: [:create, :update]
 
   def create
     workforce_configuration = WorkforceConfiguration.new(workforce_configuration_params)
@@ -23,6 +23,12 @@ class WorkforceConfigurationsController < ApplicationController
       end
     )
     redirect_to settings_project_path(@project, :tab => 'workforce')
+  end
+
+  def audit
+    @audits_count = WorkforceAudit.count
+    @audit_pages = Paginator.new @audits_count, per_page_option, params['page']
+    @audit_logs = WorkforceAudit.offset(@audit_pages.offset).limit(@audit_pages.per_page)
   end
 
   private

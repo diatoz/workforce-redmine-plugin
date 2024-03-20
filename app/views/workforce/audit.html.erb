@@ -1,0 +1,17 @@
+<table class="list">
+  <tr>
+    <th>Source ID</th>
+    <th>Source Type</th>
+    <th>Error Message</th>
+    <th>Error Backtrace</th>
+  </tr>
+  <% @audit_logs.each do |log| %>
+    <tr>
+      <td><%= log.source_id %></td>
+      <td><%= log.source_type %></td>
+      <td><%= log.error_message %></td>
+      <td><%= log.error_backtrace.present? ? sanitize(log.error_backtrace) : log.error_backtrace %></td>
+    </tr>
+  <% end %>
+</table>
+<span class="pagination"><%= pagination_links_full @audit_pages, @audit_count %></span>

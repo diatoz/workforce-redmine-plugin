@@ -1,5 +1,5 @@
 <% workforce_config = @project.workforce_config || @project.build_workforce_config %>
-<%= form_for workforce_config, url: workforce_configuration_path do |f| %>
+<%= form_for workforce_config, url: workforce_project_configuration_path do |f| %>
   <div class="box tabular">
     <%= f.hidden_field :id %>
     <%= f.hidden_field :project_id %>
