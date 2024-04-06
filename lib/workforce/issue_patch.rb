@@ -5,8 +5,6 @@ module Workforce
     included do
       has_one :workforce_config, class_name: "WorkforceConfiguration", through: :project
 
-      after_commit :notify_workforce, if: :has_workforce_config?
-
       def assignee_email
         assigned_to.try(:mail)
       end
@@ -15,14 +13,8 @@ module Workforce
         author.mail
       end
 
-      def notify_workforce
-        Workforce::Message.new(self).notify
-      rescue => e
-        Workforce.logger.error "Worforce Notification push failed. Reasone: #{e.message}"
-      end
-
-      def has_workforce_config?
-        workforce_config.present? && workforce_config.api_key.present?
+      def can_notify_workforce?
+        workforce_config.present? && workforce_config.is_enabled?
       end
     end
   end

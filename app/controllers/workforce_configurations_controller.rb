@@ -14,7 +14,7 @@ class WorkforceConfigurationsController < ApplicationController
   end
 
   def update
-    workforce_configuration = WorkforceConfiguration.find(workforce_configuration_params[:id])
+    workforce_configuration = WorkforceConfiguration.find(params[:id])
     flash[:notice] = (
       if workforce_configuration.update(workforce_configuration_params)
         l(:workforce_settings_update_success)
@@ -28,7 +28,7 @@ class WorkforceConfigurationsController < ApplicationController
   private
 
   def workforce_configuration_params
-    params.require(:workforce_configuration).permit(:id, :project_id, :api_key, :project_type)
+    params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled)
   end
 
   def set_project

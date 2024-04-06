@@ -6,6 +6,7 @@ module Workforce
   def self.apply_patches
     Project.include Workforce::ProjectPatch
     Issue.include   Workforce::IssuePatch
-    ProjectsController.send(:helper, Workforce::ProjectSettingTabsPatch)
+    IssuesController.include Workforce::IssuesControllerPatch
+    ProjectsController.helper Workforce::ProjectSettingTabsPatch
   end
 end
