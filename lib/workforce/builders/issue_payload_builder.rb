@@ -30,7 +30,7 @@ module Workforce
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
-        payload.compact!
+        payload.compact
       end
 
       def build_update_payload
@@ -46,11 +46,17 @@ module Workforce
         payload[:dueDate]          = issue.due_date.try(:iso8601) if changes_include?(:due_date)
         payload[:customFields]     = custom_fields_data
         payload[:lastModifiedDate] = issue.updated_on.iso8601
-        payload.compact!
+        payload.compact
       end
 
       def custom_fields_data
-        nil
+        return nil if issue.custom_field_values.blank?
+
+        values = []
+        issue.custom_field_values.each do |custom_value|
+          values << { id: custom_value.custom_field.id, name: custom_value.custom_field.name, value: custom_value.value }
+        end
+        values
       end
 
       def changes_include?(key)

@@ -13,8 +13,13 @@ module Workforce
         author.mail
       end
 
-      def can_notify_workforce?
+      def workforce_notifiable?
         workforce_config.present? && workforce_config.is_enabled?
+      end
+
+      def has_workforce_notifiable_changes?
+        notifiable_columns = [:subject, :description, :tracker_id, :status_id, :priority_id, :author_id, :assigned_to_id, :due_date]
+        notifiable_columns.any? { |column| previous_changes.include?(column) } || custom_values.any? { |field| field.value_previously_changed? }
       end
     end
   end
