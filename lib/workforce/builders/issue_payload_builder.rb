@@ -27,6 +27,7 @@ module Workforce
         payload[:ticketTypeId]     = issue.tracker_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:customFields]     = custom_fields_data
+        payload[:attachments]      = attachments_data
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
@@ -44,6 +45,7 @@ module Workforce
         payload[:ticketPriorityId] = issue.priority_id            if changes_include?(:priority_id)
         payload[:dueDate]          = issue.due_date.try(:iso8601) if changes_include?(:due_date)
         payload[:customFields]     = custom_fields_data
+        payload[:attachments]      = attachments_data
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload.compact
       end
@@ -56,6 +58,16 @@ module Workforce
           values << { id: custom_value.custom_field.id, name: custom_value.custom_field.name, value: custom_value.value }
         end
         values
+      end
+
+      def attachments_data
+        return nil unless issue.saved_attachments.present?
+
+        attachments = []
+        issue.saved_attachments.each do |attachment|
+          attachments << { id: attachment.id, name: attachment.filename, description: attachment.description, contentType: attachment.content_type }
+        end
+        attachments
       end
 
       def changes_include?(key)

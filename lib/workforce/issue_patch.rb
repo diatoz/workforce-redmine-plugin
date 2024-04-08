@@ -19,7 +19,11 @@ module Workforce
 
       def has_workforce_notifiable_changes?
         notifiable_columns = [:subject, :description, :tracker_id, :status_id, :priority_id, :author_id, :assigned_to_id, :due_date]
-        notifiable_columns.any? { |column| previous_changes.include?(column) } || custom_values.any? { |field| field.value_previously_changed? }
+        return true if notifiable_columns.any? { |column| previous_changes.include?(column) }
+        return true if custom_values.any? { |field| field.value_previously_changed? }
+        return true if saved_attachments.present?
+
+        false
       end
     end
   end
