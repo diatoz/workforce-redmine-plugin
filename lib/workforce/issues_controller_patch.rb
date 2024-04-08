@@ -16,6 +16,10 @@ module Workforce
           payload = Workforce::Builders::IssuePayloadBuilder.build_update_payload(@issue)
           response = Workforce::Client.update_ticket(config, payload)
         end
+        return unless @issue.current_journal.present? && @issue.current_journal.notes.present?
+
+        payload = Workforce::Builders::CommentPayloadBuilder.build_create_payload(@issue.current_journal)
+        response = Workforce::Client.create_comment(config, payload)
       rescue => e
         Workforce.logger.error "Notification failed for issue id #{@issue.id}, reason: #{e.message}"
         Workforce.logger.error e.backtrace

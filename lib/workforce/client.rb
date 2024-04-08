@@ -6,7 +6,7 @@ module Workforce
         url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
-        request = build_post_request(url, config, payload)
+        request = build_post_request(url, config, payload.to_json)
         response = https.request(request)
         log_response('create ticket', payload[:extRefId], response)
       end
@@ -16,9 +16,19 @@ module Workforce
         url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
-        request = build_patch_request(url, config, payload)
+        request = build_patch_request(url, config, payload.to_json)
         response = https.request(request)
         log_response('update ticket', payload[:extRefId], response)
+      end
+
+      def create_comment(config, payload)
+        log_request('create comment', payload[:extRefId])
+        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}/ticket-messages")
+        https = Net::HTTP.new(url.host, url.port)
+        https.use_ssl = true
+        request = build_post_request(url, config, payload[:message])
+        response = https.request(request)
+        log_response('create comment', payload[:extRefId], response)
       end
 
       private
@@ -28,7 +38,7 @@ module Workforce
         request['X-API-Key'] = config.api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/json'
-        request.body = payload.to_json
+        request.body = payload
         request
       end
 
@@ -37,7 +47,7 @@ module Workforce
         request['X-API-Key'] = config.api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/merge-patch+json'
-        request.body = payload.to_json
+        request.body = payload
         request
       end
 
