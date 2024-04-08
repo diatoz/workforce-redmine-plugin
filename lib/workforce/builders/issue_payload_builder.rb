@@ -34,6 +34,7 @@ module Workforce
       end
 
       def build_update_payload
+        payload[:extRefId]         = issue.id
         payload[:title]            = issue.subject                if changes_include?(:subject)
         payload[:description]      = issue.description            if changes_include?(:description)
         payload[:reportedByEmail]  = issue.author_email           if changes_include?(:author_id)
