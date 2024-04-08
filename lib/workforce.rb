@@ -4,8 +4,9 @@ module Workforce
   mattr_accessor :logger
 
   def self.apply_patches
+    User.include Workforce::UserPatch
+    Issue.include Workforce::IssuePatch
     Project.include Workforce::ProjectPatch
-    Issue.include   Workforce::IssuePatch
     IssuesController.include Workforce::IssuesControllerPatch
     ProjectsController.helper Workforce::ProjectSettingTabsPatch
   end

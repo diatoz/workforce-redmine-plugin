@@ -6,6 +6,7 @@ module Workforce
       after_action :notify_workforce, :only => [:create, :update]
 
       def notify_workforce
+        return if User.current.workforce_user?
         return unless RequestStore.exist?(:notify_workforce) && @issue.workforce_notifiable?
 
         config = @issue.workforce_config
