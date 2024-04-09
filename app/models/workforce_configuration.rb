@@ -3,8 +3,8 @@ class WorkforceConfiguration < ActiveRecord::Base
 
   enum project_type: { helpdesk: 0 }
 
-  def url
-    Setting.plugin_workforce['url']
+  def domain
+    Setting.plugin_workforce['domain']
   end
 
   def email

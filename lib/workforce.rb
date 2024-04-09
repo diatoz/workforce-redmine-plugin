@@ -1,11 +1,13 @@
 module Workforce
-  VERSION = "1.0.2"
+  VERSION = "1.0.3"
 
   mattr_accessor :logger
 
   def self.apply_patches
+    User.include Workforce::UserPatch
+    Issue.include Workforce::IssuePatch
     Project.include Workforce::ProjectPatch
-    Issue.include   Workforce::IssuePatch
-    ProjectsController.send(:helper, Workforce::ProjectSettingTabsPatch)
+    IssuesController.include Workforce::IssuesControllerPatch
+    ProjectsController.helper Workforce::ProjectSettingTabsPatch
   end
 end
