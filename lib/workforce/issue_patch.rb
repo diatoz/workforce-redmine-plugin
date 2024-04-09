@@ -5,8 +5,6 @@ module Workforce
     included do
       has_one :workforce_config, class_name: "WorkforceConfiguration", through: :project
 
-      after_commit :notify_workforce, if: :has_workforce_config?
-
       def assignee_email
         assigned_to.try(:mail)
       end
@@ -15,14 +13,17 @@ module Workforce
         author.mail
       end
 
-      def notify_workforce
-        Workforce::Message.new(self).notify
-      rescue => e
-        Workforce.logger.error "Worforce Notification push failed. Reasone: #{e.message}"
+      def workforce_notifiable?
+        workforce_config.present? && workforce_config.is_enabled?
       end
 
-      def has_workforce_config?
-        workforce_config.present? && workforce_config.api_key.present?
+      def has_workforce_notifiable_changes?
+        notifiable_columns = [:subject, :description, :tracker_id, :status_id, :priority_id, :author_id, :assigned_to_id, :due_date]
+        return true if notifiable_columns.any? { |column| previous_changes.include?(column) }
+        return true if custom_values.any? { |field| field.value_previously_changed? }
+        return true if saved_attachments.present?
+
+        false
       end
     end
   end

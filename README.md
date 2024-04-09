@@ -20,7 +20,7 @@ bundle exec rake redmine:plugins:migrate
 
 6. From navbar perform these navigation steps, Administration > plugins. In the plugins page, click configure in workforce plugin.
 
-7. For Workforce URL, enter the base URL for the Workforce. For Workforce email, enter the created workforce user email id and save it.
+7. For Workforce Domain, enter the domain for the Workforce. For Workforce email, enter the created workforce user email id and save it.
 
 8. Go the settings page of the project for which Workforce has to be notified. Click the Workforce tab, set the API key and save it.
 

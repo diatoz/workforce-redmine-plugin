@@ -1,7 +1,6 @@
 <% workforce_config = @project.workforce_config || @project.build_workforce_config %>
-<%= form_for workforce_config, url: workforce_configuration_path do |f| %>
+<%= form_for workforce_config do |f| %>
   <div class="box tabular">
-    <%= f.hidden_field :id %>
     <%= f.hidden_field :project_id %>
     <p>
       <%= content_tag(:label, l(:workforce_project_api_key)) %>
@@ -10,6 +9,10 @@
     <p>
       <%= content_tag(:label, l(:workforce_project_type)) %>
       <%= f.select :project_type, WorkforceConfiguration.project_types.map { |key, value| [key.humanize, key] }.to_a %>
+    </p>
+    <p>
+      <%= content_tag(:label, l(:workforce_project_enable)) %>
+      <%= f.check_box :is_enabled  %>
     </p>
   </div>
   <%= f.submit "Save" %>
