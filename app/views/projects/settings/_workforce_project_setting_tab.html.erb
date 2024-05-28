@@ -11,6 +11,10 @@
       <%= f.select :project_type, WorkforceConfiguration.project_types.map { |key, value| [key.humanize, key] }.to_a %>
     </p>
     <p>
+      <%= content_tag(:label, l(:workforce_project_group_id)) %>
+      <%= f.text_field :group_id  %>
+    </p>
+    <p>
       <%= content_tag(:label, l(:workforce_project_enable)) %>
       <%= f.check_box :is_enabled  %>
     </p>

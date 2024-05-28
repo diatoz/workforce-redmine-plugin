@@ -8,3 +8,4 @@ en:
   workforce_project_enable: Enable Workforce
   workforce_settings_update_success: Workforce Project Settings Updated Successfully
   workforce_settings_update_failed: Workforce Project Settings Update Failed
+  workforce_project_group_id: 'Group Id'
