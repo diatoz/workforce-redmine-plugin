@@ -1,24 +1,26 @@
 module Workforce
   module Builders
     class IssuePayloadBuilder
-      attr_accessor :issue, :payload
+      attr_accessor :issue, :config, :payload
 
-      def initialize(issue)
+      def initialize(issue, config)
         @issue = issue
+        @config = config
         @payload = {}
       end
 
-      def self.build_create_payload(issue)
-        new(issue).build_create_payload
+      def self.build_create_payload(issue, config)
+        new(issue, config).build_create_payload
       end
 
-      def self.build_update_payload(issue)
-        new(issue).build_update_payload
+      def self.build_update_payload(issue, config)
+        new(issue, config).build_update_payload
       end
 
       def build_create_payload
         payload[:extRefId]         = issue.id
         payload[:extTktSrc]        = 'REDMINE'
+        payload[:groupId]          = config.group_id || ''
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
         payload[:reportedByEmail]  = issue.author_email
