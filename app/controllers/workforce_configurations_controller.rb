@@ -1,5 +1,5 @@
 class WorkforceConfigurationsController < ApplicationController
-  before_action :set_project
+  before_action :find_project, :authorize
 
   def create
     workforce_configuration = WorkforceConfiguration.new(workforce_configuration_params)
@@ -31,7 +31,7 @@ class WorkforceConfigurationsController < ApplicationController
     params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled)
   end
 
-  def set_project
+  def find_project
     @project = Project.find(workforce_configuration_params[:project_id])
   end
 end

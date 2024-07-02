@@ -10,6 +10,8 @@ Redmine::Plugin.register :workforce do
 
   settings partial: 'settings/workforce_global_settings', default: { email: '', domain: '' }
 
+  permission :manage_workforce_configuration, workforce_configurations: [:create, :update]
+
   Workforce.apply_patches
   Workforce.logger = Logger.new(Rails.root.join('log/workforce.log'))
 end
