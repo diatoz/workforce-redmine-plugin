@@ -20,7 +20,7 @@ module Workforce
       def build_create_payload
         payload[:extRefId]         = issue.id
         payload[:extTktSrc]        = 'REDMINE'
-        payload[:groupId]          = config.group_id
+        payload[:groupId]          = config.group_id.presence
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
         payload[:reportedByEmail]  = issue.author_email
