@@ -28,7 +28,7 @@ class WorkforceConfigurationsController < ApplicationController
   private
 
   def workforce_configuration_params
-    params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled)
+    params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled, :group_id)
   end
 
   def set_project
