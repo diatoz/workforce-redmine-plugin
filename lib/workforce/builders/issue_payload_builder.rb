@@ -67,7 +67,7 @@ module Workforce
 
         attachments = []
         issue.saved_attachments.each do |attachment|
-          attachments << { id: attachment.id, name: attachment.filename, description: attachment.description, contentType: attachment.content_type }
+          attachments << { id: attachment.id, name: attachment.filename, contentType: attachment.content_type }
         end
         attachments
       end
