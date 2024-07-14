@@ -18,12 +18,15 @@ module Workforce
       end
 
       def has_workforce_notifiable_changes?
-        notifiable_columns = [:subject, :description, :tracker_id, :status_id, :priority_id, :author_id, :assigned_to_id, :due_date]
-        return true if notifiable_columns.any? { |column| previous_changes.include?(column) }
-        return true if custom_values.any? { |field| field.value_previously_changed? }
         return true if saved_attachments.present?
+        return true if workforce_config.notifiable_issue_fields.any? { |column| previous_changes.include?(column) }
+        return true if custom_values.any? { |field| workforce_config.notifiable_custom_field_ids.include?(field.custom_field_id) && field.value_previously_changed? }
 
         false
+      end
+
+      def attachment_custom_field_ids
+        custom_field_values.map { |field| field.custom_field.field_format == 'attachment' ? field.custom_field.id : nil}.compact
       end
     end
   end

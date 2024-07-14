@@ -23,43 +23,64 @@ module Workforce
         payload[:groupId]          = config.group_id.presence
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
-        payload[:reportedByEmail]  = issue.author_email
-        payload[:primaryAssignee]  = issue.assignee_email
         payload[:ticketStatusId]   = issue.status_id
-        payload[:ticketTypeId]     = issue.tracker_id
         payload[:ticketPriorityId] = issue.priority_id
-        payload[:customFields]     = custom_fields_data
-        payload[:attachments]      = attachments_data
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
+        payload[:reportedByEmail]  = issue.author_email             if notifiable_issue_field?('author_id')
+        payload[:primaryAssignee]  = issue.assignee_email           if notifiable_issue_field?('assigned_to_id')
+        payload[:ticketType]       = issue.tracker.name             if notifiable_issue_field?('tracker_id')
+        payload[:startDate]        = issue.start_date.try(:iso8601) if notifiable_issue_field?('start_date')
+        payload[:doneRatio]        = issue.done_ratio               if notifiable_issue_field?('done_ratio')
+        payload[:estimatedHours]   = issue.estimated_hours          if notifiable_issue_field?('estimated_hours')
+        payload[:extProjectId]     = issue.project.identifier       if notifiable_issue_field?('project_id')
+        payload[:customFields]     = custom_fields_data(true)
+        payload[:attachments]      = attachments_data
         payload.compact
       end
 
       def build_update_payload
         payload[:extRefId]         = issue.id
-        payload[:title]            = issue.subject                if changes_include?(:subject)
-        payload[:description]      = issue.description            if changes_include?(:description)
-        payload[:reportedByEmail]  = issue.author_email           if changes_include?(:author_id)
-        payload[:primaryAssignee]  = issue.assignee_email         if changes_include?(:assigned_to_id)
-        payload[:ticketTypeId]     = issue.tracker_id             if changes_include?(:tracker_id)
-        payload[:ticketStatusId]   = issue.status_id              if changes_include?(:status_id)
-        payload[:ticketPriorityId] = issue.priority_id            if changes_include?(:priority_id)
-        payload[:dueDate]          = issue.due_date.try(:iso8601) if changes_include?(:due_date)
-        payload[:customFields]     = custom_fields_data
-        payload[:attachments]      = attachments_data
+        payload[:title]            = issue.subject                  if changes_include?('subject')
+        payload[:description]      = issue.description              if changes_include?('description')
+        payload[:ticketStatusId]   = issue.status_id                if changes_include?('status_id')
+        payload[:ticketPriorityId] = issue.priority_id              if changes_include?('priority_id')
+        payload[:dueDate]          = issue.due_date.try(:iso8601)   if changes_include?('due_date')
         payload[:lastModifiedDate] = issue.updated_on.iso8601
+        payload[:primaryAssignee]  = issue.assignee_email           if changes_include?('assigned_to_id') && notifiable_issue_field?('assigned_to_id')
+        payload[:ticketTypeId]     = issue.tracker.name             if changes_include?('tracker_id') && notifiable_issue_field?('tracker_id')
+        payload[:startDate]        = issue.start_date.try(:iso8601) if changes_include?('start_date') && notifiable_issue_field?('start_date')
+        payload[:doneRatio]        = issue.done_ratio               if changes_include?('done_ratio') && notifiable_issue_field?('done_ratio')
+        payload[:estimatedHours]   = issue.estimated_hours          if changes_include?('estimated_hours') && notifiable_issue_field?('estimated_hours')
+        payload[:extProjectId]     = issue.project.identifier       if changes_include?('project_id') && notifiable_issue_field?('project_id')
+        payload[:customFields]     = custom_fields_data(false)
+        payload[:attachments]      = attachments_data
         payload.compact
       end
 
-      def custom_fields_data
-        return nil if issue.custom_field_values.blank?
+      def custom_fields_data(create_payload)
+        custom_field_values = create_payload ? issue.custom_values : issue.custom_values.select(&:value_previously_changed?)
+        notifiable_values = custom_field_values.select { |custom_value| notifiable_custom_field_id?(custom_value.custom_field_id) }
+        return nil if notifiable_values.blank?
 
-        values = []
-        issue.custom_field_values.each do |custom_value|
-          values << { id: custom_value.custom_field.id, name: custom_value.custom_field.name, value: custom_value.value }
+        data = []
+        attachment_field_ids = issue.attachment_custom_field_ids
+        notifiable_values.each do |custom_value|
+          data << {
+            customValueId: custom_value.id,
+            customFieldId: custom_value.custom_field_id,
+            customValue: (
+              if attachment_field_ids.include?(custom_value.custom_field_id)
+                attachment = Attachment.find_by(id: custom_value.value)
+                attachment.present? ? { id: attachment.id, name: attachment.filename, contentType: attachment.content_type } : ""
+              else
+                custom_value.value
+              end
+            )
+          }
         end
-        values
+        data
       end
 
       def attachments_data
@@ -74,6 +95,14 @@ module Workforce
 
       def changes_include?(key)
         issue.previous_changes.include?(key)
+      end
+
+      def notifiable_issue_field?(field)
+        config.notifiable_issue_fields.include?(field)
+      end
+
+      def notifiable_custom_field_id?(id)
+        config.notifiable_custom_field_ids.include?(id)
       end
     end
   end
