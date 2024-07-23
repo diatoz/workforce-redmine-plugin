@@ -20,16 +20,16 @@
     </p>
   </fieldset>
   <fieldset class="box tabular" id="wf_issue_fields"><legend><%=l(:workforce_notifiable_issue_fields)%></legend>
-    <% WorkforceConfiguration::ISSUE_MANDATORY_ATTRIBUTES.each do |attribute| %>
+    <% Workforce::ISSUE_MANDATORY_ATTRIBUTES.each do |attribute| %>
       <label class="floating">
         <%= check_box_tag 'workforce_configuration[issue_notifiable_columns][issue_fields][]', attribute, true, disabled: true, id: nil %>
-        <%= attribute.humanize %>
+        <%= Issue.human_attribute_name(attribute) %>
       </label>
     <% end %>
-    <% WorkforceConfiguration::ISSUE_SUPPORTED_ATTRIBUTES.each do |attribute| %>
+    <% Workforce::ISSUE_SUPPORTED_ATTRIBUTES.each do |attribute| %>
       <label class="floating">
         <%= check_box_tag 'workforce_configuration[issue_notifiable_columns][issue_fields][]', attribute, (workforce_config.notifiable_issue_fields.include? attribute), id: nil %>
-        <%= attribute.humanize %>
+        <%= Issue.human_attribute_name(attribute) %>
       </label>
     <% end %>
     <%= hidden_field_tag 'workforce_configuration[issue_notifiable_columns][issue_fields][]', "" %>
@@ -38,7 +38,7 @@
   <% unless issue_custom_fields.empty? %>
     <fieldset class="box tabular" id="wf_issue_custom_fields"><legend><%=l(:workforce_notifiable_custom_fields)%></legend>
       <% issue_custom_fields.each do |custom_field| %>
-        <% next unless workforce_config.supported_custom_field_format?(custom_field) %>
+        <% next unless custom_field.workforce_supported_field? %>
         <label class="floating">
           <%= check_box_tag 'workforce_configuration[issue_notifiable_columns][custom_field_ids][]', custom_field.id, (workforce_config.notifiable_custom_field_ids.include? custom_field.id), id: nil %>
           <%= custom_field_name_tag(custom_field) %>

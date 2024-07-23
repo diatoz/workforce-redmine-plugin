@@ -28,13 +28,6 @@ module Workforce
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
-        payload[:reportedByEmail]  = issue.author_email             if notifiable_issue_field?('author_id')
-        payload[:primaryAssignee]  = issue.assignee_email           if notifiable_issue_field?('assigned_to_id')
-        payload[:ticketType]       = issue.tracker.name             if notifiable_issue_field?('tracker_id')
-        payload[:startDate]        = issue.start_date.try(:iso8601) if notifiable_issue_field?('start_date')
-        payload[:doneRatio]        = issue.done_ratio               if notifiable_issue_field?('done_ratio')
-        payload[:estimatedHours]   = issue.estimated_hours          if notifiable_issue_field?('estimated_hours')
-        payload[:extProjectId]     = issue.project.identifier       if notifiable_issue_field?('project_id')
         payload[:customFields]     = custom_fields_data(true)
         payload[:attachments]      = attachments_data
         payload.compact
@@ -48,43 +41,36 @@ module Workforce
         payload[:ticketPriorityId] = issue.priority_id              if changes_include?('priority_id')
         payload[:dueDate]          = issue.due_date.try(:iso8601)   if changes_include?('due_date')
         payload[:lastModifiedDate] = issue.updated_on.iso8601
-        payload[:primaryAssignee]  = issue.assignee_email           if changes_include?('assigned_to_id') && notifiable_issue_field?('assigned_to_id')
-        payload[:ticketTypeId]     = issue.tracker.name             if changes_include?('tracker_id') && notifiable_issue_field?('tracker_id')
-        payload[:startDate]        = issue.start_date.try(:iso8601) if changes_include?('start_date') && notifiable_issue_field?('start_date')
-        payload[:doneRatio]        = issue.done_ratio               if changes_include?('done_ratio') && notifiable_issue_field?('done_ratio')
-        payload[:estimatedHours]   = issue.estimated_hours          if changes_include?('estimated_hours') && notifiable_issue_field?('estimated_hours')
-        payload[:extProjectId]     = issue.project.identifier       if changes_include?('project_id') && notifiable_issue_field?('project_id')
         payload[:customFields]     = custom_fields_data(false)
         payload[:attachments]      = attachments_data
         payload.compact
       end
 
       def custom_fields_data(create_payload)
-        custom_field_values = create_payload ? issue.custom_values : issue.custom_values.select(&:value_previously_changed?)
-        notifiable_values = custom_field_values.select { |custom_value| notifiable_custom_field_id?(custom_value.custom_field_id) }
-        return nil if notifiable_values.blank?
-
         data = []
-        attachment_field_ids = issue.attachment_custom_field_ids
-        notifiable_values.each do |custom_value|
+        issue_attributes = ISSUE_SUPPORTED_ATTRIBUTES.select { |attribute| notifiable_issue_field?(attribute) }
+        notifiable_issue_attributes = create_payload ? issue_attributes : issue_attributes.select { |attribute| changes_include?(attribute) }
+        notifiable_issue_attributes.each do |attribute|
           data << {
-            customValueId: custom_value.id,
-            customFieldId: custom_value.custom_field_id,
-            customValue: (
-              if attachment_field_ids.include?(custom_value.custom_field_id)
-                attachment = Attachment.find_by(id: custom_value.value)
-                attachment.present? ? { id: attachment.id, name: attachment.filename, contentType: attachment.content_type } : ""
-              else
-                custom_value.value
-              end
-            )
+            name: Issue.human_attribute_name(attribute),
+            value: issue_attribute_value(attribute),
+            fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
           }
         end
-        data
+        custom_values = issue.custom_values.select { |custom_value| notifiable_custom_field?(custom_value.custom_field) }
+        notifiable_custom_values = create_payload ? custom_values : custom_values.select(&:value_previously_changed?)
+        notifiable_custom_values.each do |custom_value|
+          data << {
+            id: custom_value.custom_field_id,
+            name: custom_value.custom_field.name,
+            value: custom_value.value
+          }
+        end
+        data.compact
       end
 
       def attachments_data
-        return nil unless issue.saved_attachments.present?
+        return nil if issue.saved_attachments.blank?
 
         attachments = []
         issue.saved_attachments.each do |attachment|
@@ -101,8 +87,23 @@ module Workforce
         config.notifiable_issue_fields.include?(field)
       end
 
-      def notifiable_custom_field_id?(id)
-        config.notifiable_custom_field_ids.include?(id)
+      def notifiable_custom_field?(field)
+        config.notifiable_custom_field_ids.include?(field.id)
+      end
+
+      def issue_attribute_value(attribute)
+        case attribute
+        when 'project_id'
+          issue.project.name
+        when 'tracker_id'
+          issue.tracker.name
+        when 'author_id'
+          issue.author_email
+        when 'assigned_to_id'
+          issue.assignee_email
+        else
+          issue.send(attribute.to_sym)
+        end
       end
     end
   end
