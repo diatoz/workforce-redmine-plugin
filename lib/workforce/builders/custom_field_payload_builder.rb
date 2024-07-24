@@ -18,7 +18,7 @@ module Workforce
         payload[:id]             = field.id
         payload[:name]           = field.name
         payload[:fieldFormat]    = field.workforce_field_format
-        payload[:possibleValues] = field.possible_values
+        payload[:possibleValues] = field.possible_values.presence
         payload.compact
       end
     end
