@@ -17,6 +17,7 @@ module Workforce
           payload = Workforce::Builders::IssuePayloadBuilder.build_update_payload(@issue, config)
           response = Workforce::Client.update_ticket(config, payload)
         end
+        Workforce.logger.error payload.to_json
         return unless @issue.current_journal.present? && @issue.current_journal.notes.present?
 
         payload = Workforce::Builders::CommentPayloadBuilder.build_create_payload(@issue.current_journal)
