@@ -1,5 +1,5 @@
 module Workforce
-  VERSION = "1.0.3"
+  VERSION = "1.1.0"
   CUSTOM_FIELD_NOT_SUPPORTED_FORMATS = %w[user version enumeration attachment bool list]
   CUSTOM_FIELD_FORMAT_MAPPING = {
     "float" => "NUMBER",
