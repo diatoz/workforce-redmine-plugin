@@ -56,8 +56,6 @@ module Workforce
       end
 
       def log_response(action, id, request, response)
-        require 'pry'
-        binding.pry
         Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
         unless response.code.to_s == "200"
           Workforce.logger.error "request-body: #{request.body.inspect}"
