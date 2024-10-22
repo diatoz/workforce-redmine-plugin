@@ -8,7 +8,7 @@ module Workforce
         https.use_ssl = true
         request = build_post_request(url, config, payload.to_json)
         response = https.request(request)
-        log_response('create ticket', payload[:extRefId], response)
+        log_response('create ticket', payload[:extRefId], request, response)
       end
 
       def update_ticket(config, payload)
@@ -18,7 +18,7 @@ module Workforce
         https.use_ssl = true
         request = build_patch_request(url, config, payload.to_json)
         response = https.request(request)
-        log_response('update ticket', payload[:extRefId], response)
+        log_response('update ticket', payload[:extRefId], request, response)
       end
 
       def create_comment(config, payload)
@@ -28,7 +28,7 @@ module Workforce
         https.use_ssl = true
         request = build_post_request(url, config, payload[:message])
         response = https.request(request)
-        log_response('create comment', payload[:extRefId], response)
+        log_response('create comment', payload[:extRefId], request, response)
       end
 
       private
@@ -52,14 +52,17 @@ module Workforce
       end
 
       def log_request(action, id)
-        Workforce.logger.info("Requsting to #{action} for #{id}")
+        Workforce.logger.info("Requesting to #{action} for #{id}")
       end
 
-      def log_response(action, id, response)
+      def log_response(action, id, request, response)
+        require 'pry'
+        binding.pry
         Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
         unless response.code.to_s == "200"
-          Workforce.logger.error response.message.inspect
-          Workforce.logger.error response.body.inspect
+          Workforce.logger.error "request-body: #{request.body.inspect}"
+          Workforce.logger.error "response-body: #{response.body.inspect}"
+          Workforce.logger.error "response-message: #{response.message.inspect}"
         end
       end
     end
