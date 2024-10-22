@@ -2,9 +2,9 @@ class WorkforceConfigurationsController < ApplicationController
   before_action :find_project, :authorize
 
   def create
-    workforce_configuration = WorkforceConfiguration.new(workforce_configuration_params)
+    config = WorkforceConfiguration.new(config_params)
     flash[:notice] = (
-      if workforce_configuration.save
+      if config.save
         l(:workforce_settings_update_success)
       else
         l(:workforce_settings_update_failed)
@@ -14,9 +14,9 @@ class WorkforceConfigurationsController < ApplicationController
   end
 
   def update
-    workforce_configuration = WorkforceConfiguration.find(params[:id])
+    config = WorkforceConfiguration.find(params[:id])
     flash[:notice] = (
-      if workforce_configuration.update(workforce_configuration_params)
+      if config.update(config_params)
         l(:workforce_settings_update_success)
       else
         l(:workforce_settings_update_failed)
@@ -27,11 +27,11 @@ class WorkforceConfigurationsController < ApplicationController
 
   private
 
-  def workforce_configuration_params
-    params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled, :group_id)
+  def config_params
+    params.require(:workforce_configuration).permit(:project_id, :api_key, :project_type, :is_enabled, :group_id, issue_notifiable_columns: {custom_field_ids: [], issue_fields: []})
   end
 
   def find_project
-    @project = Project.find(workforce_configuration_params[:project_id])
+    @project = Project.find(config_params[:project_id])
   end
 end
