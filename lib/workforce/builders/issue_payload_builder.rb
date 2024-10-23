@@ -63,7 +63,8 @@ module Workforce
           data << {
             id: custom_value.custom_field_id,
             name: custom_value.custom_field.name,
-            value: custom_value.value
+            value: custom_value.value,
+            fieldFormat: custom_value.custom_field.workforce_field_format
           }
         end
         data.compact
