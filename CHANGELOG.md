@@ -1,3 +1,12 @@
+## 1.1.0
+
+* Added authorization for accessing workforce settings tab under project.
+* Added group Id field in workforce settings tab to decide which workforce helpdesk group that issue should fall into
+  for that particular project.
+* Added attachment support for issues.
+* Custom fields of issues are supported now. Provided UI in workforce settings tab to customize which fields has to be
+  reflected in workforce
+
 ## 1.0.3
 
 * Added enable or disable workforce notifications on project level.

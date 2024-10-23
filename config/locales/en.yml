@@ -8,3 +8,7 @@ en:
   workforce_project_enable: Enable Workforce
   workforce_settings_update_success: Workforce Project Settings Updated Successfully
   workforce_settings_update_failed: Workforce Project Settings Update Failed
+  workforce_project_group_id: 'Group Id'
+  workforce_notifiable_custom_fields: Notifiable Custom Fields
+  workforce_notifiable_issue_fields: Notifiable Issue Fields
+  workforce_general_settings: General Settings
