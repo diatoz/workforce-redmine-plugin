@@ -22,7 +22,7 @@ module Workforce
         payload[:extTktSrc]        = 'REDMINE'
         payload[:groupId]          = config.group_id.presence
         payload[:title]            = issue.subject
-        payload[:description]      = issue.description
+        payload[:description]      = convert_to_html(issue.description)
         payload[:ticketStatusId]   = issue.status_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:dueDate]          = issue.due_date.try(:iso8601)
@@ -35,11 +35,11 @@ module Workforce
 
       def build_update_payload
         payload[:extRefId]         = issue.id
-        payload[:title]            = issue.subject                  if changes_include?('subject')
-        payload[:description]      = issue.description              if changes_include?('description')
-        payload[:ticketStatusId]   = issue.status_id                if changes_include?('status_id')
-        payload[:ticketPriorityId] = issue.priority_id              if changes_include?('priority_id')
-        payload[:dueDate]          = issue.due_date.try(:iso8601)   if changes_include?('due_date')
+        payload[:title]            = issue.subject                      if changes_include?('subject')
+        payload[:description]      = convert_to_html(issue.description) if changes_include?('description')
+        payload[:ticketStatusId]   = issue.status_id                    if changes_include?('status_id')
+        payload[:ticketPriorityId] = issue.priority_id                  if changes_include?('priority_id')
+        payload[:dueDate]          = issue.due_date.try(:iso8601)       if changes_include?('due_date')
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(false)
         payload[:attachments]      = attachments_data
@@ -105,6 +105,12 @@ module Workforce
         else
           issue.send(attribute.to_sym)
         end
+      end
+
+      def convert_to_html(text)
+        return "" if text.blank?
+
+        text = Redmine::WikiFormatting.to_html("textile", text)
       end
     end
   end
