@@ -6,3 +6,7 @@
   <%= content_tag(:label, l(:workforce_global_email)) %>
   <%= text_field_tag 'settings[email]', @settings["email"] %>
 </p>
+<p>
+  <%= content_tag(:label, l(:workforce_ticket_endpoint)) %>
+  <%= text_field_tag 'settings[ticket_endpoint]', @settings["ticket_endpoint"], :size => 80 %>
+</p>
