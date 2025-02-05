@@ -8,7 +8,7 @@ Redmine::Plugin.register :workforce do
   url 'https://github.com/diatoz/workforce-redmine-plugin'
   author_url 'https://e2eworkforce.com/'
 
-  settings partial: 'settings/workforce_global_settings', default: { email: '', domain: '' }
+  settings partial: 'settings/workforce_global_settings', default: { email: '', domain: '', ticket_endpoint: '' }
 
   permission :manage_workforce_configuration, workforce_configurations: [:create, :update]
 

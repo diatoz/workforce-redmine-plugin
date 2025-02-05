@@ -3,7 +3,7 @@ module Workforce
     class << self
       def create_ticket(config, payload)
         log_request('create ticket', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets")
+        url = URI(config.ticket_endpoint)
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_post_request(url, config, payload.to_json)
@@ -13,7 +13,7 @@ module Workforce
 
       def update_ticket(config, payload)
         log_request('update ticket', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}")
+        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_patch_request(url, config, payload.to_json)
@@ -23,7 +23,7 @@ module Workforce
 
       def create_comment(config, payload)
         log_request('create comment', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}/ticket-messages")
+        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_post_request(url, config, payload[:message])
