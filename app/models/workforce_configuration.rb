@@ -23,6 +23,10 @@ class WorkforceConfiguration < ActiveRecord::Base
     global_config['ticket_endpoint']
   end
 
+  def default_api_key
+    global_config['api_key']
+  end
+
   def notifiable_issue_fields
     Workforce::ISSUE_MANDATORY_ATTRIBUTES + (issue_notifiable_columns.try('[]', 'issue_fields') || [])
   end

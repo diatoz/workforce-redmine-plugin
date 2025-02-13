@@ -35,7 +35,7 @@ module Workforce
 
       def build_post_request(url, config, payload)
         request = Net::HTTP::Post.new(url)
-        request['X-API-Key'] = config.api_key
+        request['X-API-Key'] = config.default_api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/json'
         request.body = payload
@@ -44,7 +44,7 @@ module Workforce
 
       def build_patch_request(url, config, payload)
         request = Net::HTTP::Patch.new(url)
-        request['X-API-Key'] = config.api_key
+        request['X-API-Key'] = config.default_api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/merge-patch+json'
         request.body = payload

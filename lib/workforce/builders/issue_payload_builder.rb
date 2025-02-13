@@ -56,11 +56,13 @@ module Workforce
             fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
           }
         end
-        data << {
-          name: "Project Path",
-          value: issue.project.ancestors.pluck(:name).join(' >> ').presence ,
-          fieldFormat: "TEXT"
-        } if create_payload # pushing project ancestors name
+        if create_payload
+          data << {
+            name: "Project Path",
+            value: issue.project.ancestors.pluck(:name).join(' >> ').presence,
+            fieldFormat: "TEXT"
+          }
+        end
         custom_values = issue.custom_values.select { |custom_value| notifiable_custom_field?(custom_value.custom_field) }
         notifiable_custom_values = create_payload ? custom_values : custom_values.select(&:value_previously_changed?)
         notifiable_custom_values.each do |custom_value|

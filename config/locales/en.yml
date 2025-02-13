@@ -2,6 +2,7 @@ en:
   workforce_global_domain: Workforce Domain
   workforce_global_email: Workforce Email
   workforce_ticket_endpoint: Workforce Ticket Creation Endpoint
+  workforce_api_key: Workforce Api Key
 
   workforce_project_tab: Workforce
   workforce_project_api_key: API Key
