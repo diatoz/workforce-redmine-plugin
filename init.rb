@@ -13,5 +13,5 @@ Redmine::Plugin.register :workforce do
   permission :manage_workforce_configuration, workforce_configurations: [:create, :update]
 
   Workforce.apply_patches
-  Workforce.logger = Logger.new(Rails.root.join('log/workforce.log'))
+  Workforce.logger = Logger.new(Rails.root.join('log/workforce.log'), 5, 30 * 1024 * 1024)
 end

@@ -57,7 +57,7 @@ module Workforce
 
       def log_response(action, id, request, response)
         Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
-        unless response.code.to_s == "200"
+        unless response.code.to_s == "200" || response.code.to_s == "201"
           Workforce.logger.error "request-body: #{request.body.inspect}"
           Workforce.logger.error "response-body: #{response.body.inspect}"
           Workforce.logger.error "response-message: #{response.message.inspect}"
