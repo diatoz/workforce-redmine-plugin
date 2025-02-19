@@ -3,14 +3,6 @@
   <fieldset class="box tabular"><legend><%=l(:workforce_general_settings)%></legend>
     <%= f.hidden_field :project_id %>
     <p>
-      <%= content_tag(:label, l(:workforce_project_api_key)) %>
-      <%= f.text_area :api_key, :rows => 4  %>
-    </p>
-    <p>
-      <%= content_tag(:label, l(:workforce_project_group_id)) %>
-      <%= f.text_field :group_id  %>
-    </p>
-    <p>
       <%= content_tag(:label, l(:workforce_project_type)) %>
       <%= f.select :project_type, WorkforceConfiguration.project_types.map { |key, value| [key.humanize, key] }.to_a %>
     </p>

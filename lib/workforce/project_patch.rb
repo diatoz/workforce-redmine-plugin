@@ -11,7 +11,10 @@ module Workforce
         create_workforce_config(
           project_type: 0,
           is_enabled: true,
-          issue_notifiable_columns: { "custom_field_ids" => [], "issue_fields" => [] }.with_indifferent_access
+          issue_notifiable_columns: {
+            "custom_field_ids" => [],
+            "issue_fields" => Workforce::ISSUE_SUPPORTED_ATTRIBUTES
+          }.with_indifferent_access
         )
       end
     end
