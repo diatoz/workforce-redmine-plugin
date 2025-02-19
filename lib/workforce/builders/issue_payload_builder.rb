@@ -47,14 +47,20 @@ module Workforce
       end
 
       def custom_fields_data(create_payload)
-        data = []
         issue_attributes = ISSUE_SUPPORTED_ATTRIBUTES.select { |attribute| notifiable_issue_field?(attribute) }
         notifiable_issue_attributes = create_payload ? issue_attributes : issue_attributes.select { |attribute| changes_include?(attribute) }
-        notifiable_issue_attributes.each do |attribute|
-          data << {
+        data = notifiable_issue_attributes.map do |attribute|
+          {
             name: Issue.human_attribute_name(attribute),
             value: issue_attribute_value(attribute),
             fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
+          }
+        end
+        if create_payload
+          data << {
+            name: "Project Path",
+            value: issue.project.ancestors.pluck(:name).join(' >> ').presence,
+            fieldFormat: "TEXT"
           }
         end
         custom_values = issue.custom_values.select { |custom_value| notifiable_custom_field?(custom_value.custom_field) }
@@ -73,11 +79,9 @@ module Workforce
       def attachments_data
         return nil if issue.saved_attachments.blank?
 
-        attachments = []
-        issue.saved_attachments.each do |attachment|
-          attachments << { id: attachment.id, name: attachment.filename, contentType: attachment.content_type }
+        attachments = issue.saved_attachments.map do |attachment|
+          { id: attachment.id, name: attachment.filename, contentType: attachment.content_type }
         end
-        attachments
       end
 
       def changes_include?(key)

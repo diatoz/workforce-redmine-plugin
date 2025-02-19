@@ -3,7 +3,7 @@ module Workforce
     class << self
       def create_ticket(config, payload)
         log_request('create ticket', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets")
+        url = URI(config.ticket_endpoint)
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_post_request(url, config, payload.to_json)
@@ -13,7 +13,7 @@ module Workforce
 
       def update_ticket(config, payload)
         log_request('update ticket', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}")
+        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_patch_request(url, config, payload.to_json)
@@ -23,7 +23,7 @@ module Workforce
 
       def create_comment(config, payload)
         log_request('create comment', payload[:extRefId])
-        url = URI("https://#{config.domain}/abc/services/helpdesk/api/bot/tickets/#{payload[:extRefId]}/ticket-messages")
+        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = build_post_request(url, config, payload[:message])
@@ -35,7 +35,7 @@ module Workforce
 
       def build_post_request(url, config, payload)
         request = Net::HTTP::Post.new(url)
-        request['X-API-Key'] = config.api_key
+        request['X-API-Key'] = config.default_api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/json'
         request.body = payload
@@ -44,7 +44,7 @@ module Workforce
 
       def build_patch_request(url, config, payload)
         request = Net::HTTP::Patch.new(url)
-        request['X-API-Key'] = config.api_key
+        request['X-API-Key'] = config.default_api_key
         request['X-Client'] = url.host.split('.').first
         request.content_type = 'application/merge-patch+json'
         request.body = payload
@@ -57,7 +57,7 @@ module Workforce
 
       def log_response(action, id, request, response)
         Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
-        unless response.code.to_s == "200"
+        unless response.code.to_s == "200" || response.code.to_s == "201"
           Workforce.logger.error "request-body: #{request.body.inspect}"
           Workforce.logger.error "response-body: #{response.body.inspect}"
           Workforce.logger.error "response-message: #{response.message.inspect}"

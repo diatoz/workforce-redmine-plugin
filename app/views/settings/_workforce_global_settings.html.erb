@@ -1,8 +1,16 @@
 <p>
   <%= content_tag(:label, l(:workforce_global_domain)) %>
-  <%= text_field_tag 'settings[domain]', @settings["domain"] %>
+  <%= text_field_tag 'settings[domain]', @settings["domain"], :size => 60 %>
 </p>
 <p>
   <%= content_tag(:label, l(:workforce_global_email)) %>
-  <%= text_field_tag 'settings[email]', @settings["email"] %>
+  <%= text_field_tag 'settings[email]', @settings["email"], :size => 60 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_ticket_endpoint)) %>
+  <%= text_field_tag 'settings[ticket_endpoint]', @settings["ticket_endpoint"], :size => 60 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_api_key)) %>
+  <%= text_area_tag 'settings[api_key]', @settings["api_key"], :rows => 4 %>
 </p>

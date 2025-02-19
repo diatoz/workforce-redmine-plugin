@@ -7,12 +7,24 @@ class WorkforceConfiguration < ActiveRecord::Base
 
   enum project_type: { helpdesk: 0 }
 
+  def global_config
+    @global_config ||= Setting.plugin_workforce
+  end
+
   def domain
-    Setting.plugin_workforce['domain']
+    global_config['domain']
   end
 
   def email
-    Setting.plugin_workforce['email']
+    global_config['email']
+  end
+
+  def ticket_endpoint
+    global_config['ticket_endpoint']
+  end
+
+  def default_api_key
+    global_config['api_key']
   end
 
   def notifiable_issue_fields
