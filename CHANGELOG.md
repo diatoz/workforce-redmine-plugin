@@ -1,3 +1,11 @@
+## 1.1.1
+
+* Moved project level api key configuration to the global configuration.
+* Added workforce endpoint configuration to the global configuration.
+* For new projects, Workforce notifications will be enabled by default with all supported notifiable issue fields.
+* Added log rotation for workforce logs.
+* Added a Rake task to migrate all projects to the default Workforce settings.
+
 ## 1.1.0
 
 * Added authorization for accessing workforce settings tab under project.
