@@ -18,12 +18,16 @@ module Workforce
 
       def build_create_payload
         payload[:extRefId] = journal.journalized_id
+        payload[:messageId] = journal.id
         payload[:message] = journal.notes
         payload
       end
 
       def build_update_payload
-        nil
+        payload[:extRefId] = journal.journalized_id
+        payload[:messageId] = journal.id
+        payload[:message] = journal.notes
+        payload
       end
     end
   end
