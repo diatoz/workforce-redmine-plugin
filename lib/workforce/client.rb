@@ -22,13 +22,33 @@ module Workforce
       end
 
       def create_comment(config, payload)
-        log_request('create comment', payload[:extRefId])
+        log_request('create comment', payload[:messageId])
         url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
-        request = build_post_request(url, config, payload[:message])
+        request = build_post_request(url, config, payload.slice(:messageId, :message).to_json)
         response = https.request(request)
-        log_response('create comment', payload[:extRefId], request, response)
+        log_response('create comment', payload[:messageId], request, response)
+      end
+
+      def update_comment(config, payload)
+        log_request('update comment', payload[:messageId])
+        url = URI("#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}")
+        https = Net::HTTP.new(url.host, url.port)
+        https.use_ssl = true
+        request = build_patch_request(url, config, payload.slice(:message).to_json)
+        response = https.request(request)
+        log_response('update comment', payload[:messageId], request, response)
+      end
+
+      def destroy_comment(config, payload)
+        log_request('destroy comment', payload[:messageId])
+        url = URI("#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}")
+        https = Net::HTTP.new(url.host, url.port)
+        https.use_ssl = true
+        request = build_destroy_request(url, config, '')
+        response = https.request(request)
+        log_response('destroy comment', payload[:messageId], request, response)
       end
 
       private
@@ -51,17 +71,26 @@ module Workforce
         request
       end
 
+      def build_destroy_request(url, config, payload)
+        request = Net::HTTP::Delete.new(url)
+        request['X-API-Key'] = config.default_api_key
+        request['X-Client'] = url.host.split('.').first
+        request.content_type = 'application/json'
+        request.body = payload if payload.present?
+        request
+      end
+
       def log_request(action, id)
         Workforce.logger.info("Requesting to #{action} for #{id}")
       end
 
       def log_response(action, id, request, response)
         Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
-        unless response.code.to_s == "200" || response.code.to_s == "201"
-          Workforce.logger.error "request-body: #{request.body.inspect}"
-          Workforce.logger.error "response-body: #{response.body.inspect}"
-          Workforce.logger.error "response-message: #{response.message.inspect}"
-        end
+        return if ["200", "201"].include?(response.code.to_s)
+
+        Workforce.logger.error "request-body: #{request.body.inspect}"
+        Workforce.logger.error "response-body: #{response.body.inspect}"
+        Workforce.logger.error "response-message: #{response.message.inspect}"
       end
     end
   end
