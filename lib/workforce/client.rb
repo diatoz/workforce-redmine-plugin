@@ -36,7 +36,7 @@ module Workforce
         url = URI("#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}")
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
-        request = build_patch_request(url, config, payload.slice(:message).to_json)
+        request = build_patch_request(url, config, payload[:message])
         response = https.request(request)
         log_response('update comment', payload[:messageId], request, response)
       end
