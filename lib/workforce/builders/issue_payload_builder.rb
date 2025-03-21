@@ -56,7 +56,7 @@ module Workforce
             fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
           }
         end
-        if create_payload
+        if create_payload || changes_include?('project_id')
           data << {
             name: "Project Path",
             value: issue.project.ancestors.pluck(:name).join(' >> ').presence,
