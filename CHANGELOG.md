@@ -1,3 +1,9 @@
+## 1.1.2
+
+* Added patch and delete support for notes from workforce.
+* Added custom api for notes creation.
+* Included the project name in the project path within the issue payload.
+
 ## 1.1.1
 
 * Moved project level api key configuration to the global configuration.
