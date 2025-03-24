@@ -35,6 +35,7 @@ module Workforce
     Project.include Workforce::ProjectPatch
     CustomField.include Workforce::CustomFieldPatch
     IssuesController.include Workforce::IssuesControllerPatch
+    JournalsController.include Workforce::JournalsControllerPatch
     ProjectsController.helper Workforce::ProjectSettingTabsPatch
   end
 end

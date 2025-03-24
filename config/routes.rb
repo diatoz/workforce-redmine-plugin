@@ -3,4 +3,7 @@
 
 resources :workforce_configurations
 
-get '/workforce/custom_fields', to: 'workforce/custom_fields#index'
+namespace :workforce do
+  get 'custom_fields', to: 'custom_api#custom_fields'
+  post 'journals', to: 'custom_api#create_journal'
+end
