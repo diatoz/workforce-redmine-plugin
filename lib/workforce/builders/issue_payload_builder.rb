@@ -57,9 +57,10 @@ module Workforce
           }
         end
         if create_payload || changes_include?('project_id')
+          ancestors = issue.project.ancestors.pluck(:name) << issue_attribute_value("project_id")
           data << {
             name: "Project Path",
-            value: issue.project.ancestors.pluck(:name).join(' >> ').presence,
+            value: ancestors.join(' >> ').presence,
             fieldFormat: "TEXT"
           }
         end
