@@ -65,12 +65,12 @@ module Workforce
           }
         end
         custom_values = issue.custom_values.select { |custom_value| notifiable_custom_field?(custom_value.custom_field) }
-        notifiable_custom_values = create_payload ? custom_values : custom_values.select(&:value_previously_changed?)
+        notifiable_custom_values = (create_payload ? custom_values : custom_values.select(&:value_previously_changed?)).uniq(&:custom_field_id)
         notifiable_custom_values.each do |custom_value|
           data << {
             id: custom_value.custom_field_id,
             name: custom_value.custom_field.name,
-            value: custom_value.value,
+            value: custom_field_value(custom_value.custom_field),
             fieldFormat: custom_value.custom_field.workforce_field_format
           }
         end
@@ -109,6 +109,27 @@ module Workforce
           issue.assignee_email
         else
           issue.send(attribute.to_sym)
+        end
+      end
+
+      def custom_field_value(custom_field)
+        custom_field_value = issue.custom_field_values.find { |value| value.custom_field_id == custom_field.id }
+        return "" if custom_field_value.blank?
+
+        case custom_field.field_format
+        when "list"
+          custom_field.multiple? ? custom_field_value.value.join(', ') : custom_field_value.value
+        when "bool"
+          case custom_field_value.value
+          when "0"
+            "No"
+          when "1"
+            "Yes"
+          else
+            " - "
+          end
+        else
+          custom_field_value.value
         end
       end
     end

@@ -1,6 +1,6 @@
 module Workforce
   VERSION = "1.1.2"
-  CUSTOM_FIELD_NOT_SUPPORTED_FORMATS = %w[user version enumeration attachment bool list]
+  CUSTOM_FIELD_NOT_SUPPORTED_FORMATS = %w[user version enumeration attachment]
   CUSTOM_FIELD_FORMAT_MAPPING = {
     "float" => "NUMBER",
     "int" => "NUMBER",
@@ -8,8 +8,8 @@ module Workforce
     "text" => "TEXT",
     "string" => "TEXT",
     "link"  => "URL",
-    "bool" => "SINGLE_SELECT",
-    "list" => "SINGLE_SELECT",
+    "bool" => "TEXT",
+    "list" => "TEXT",
     "enumeration" => "SINGLE_SELECT",
     "attachment" => nil,
     "user"  => nil,
