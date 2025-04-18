@@ -1,3 +1,8 @@
+## 1.1.3
+
+* Added support for custom fields of type boolean and list.
+* For new projects, all supported custom fields will be enabled by default
+
 ## 1.1.2
 
 * Added patch and delete support for notes from workforce.
