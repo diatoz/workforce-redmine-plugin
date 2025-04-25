@@ -51,7 +51,7 @@ module Workforce
         notifiable_issue_attributes = create_payload ? issue_attributes : issue_attributes.select { |attribute| changes_include?(attribute) }
         data = notifiable_issue_attributes.map do |attribute|
           {
-            name: Issue.human_attribute_name(attribute),
+            name: Issue.human_attribute_name(attribute, locale: :en),
             value: issue_attribute_value(attribute),
             fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
           }
