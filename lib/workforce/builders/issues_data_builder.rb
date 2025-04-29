@@ -1,6 +1,6 @@
 module Workforce
   module Builders
-    class IssuePayloadBuilder
+    class IssuesDataBuilder
       attr_accessor :issue, :config, :payload
 
       def initialize(issue, config)
@@ -17,6 +17,10 @@ module Workforce
         new(issue, config).build_update_payload
       end
 
+      def self.serialize(issue)
+        new(issue, issue.workforce_config).serialize
+      end
+
       def build_create_payload
         payload[:extRefId]         = issue.id
         payload[:extTktSrc]        = 'REDMINE'
@@ -29,7 +33,7 @@ module Workforce
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(true)
-        payload[:attachments]      = attachments_data
+        payload[:attachments]      = saved_attachments_data
         payload.compact
       end
 
@@ -42,6 +46,22 @@ module Workforce
         payload[:dueDate]          = issue.due_date.try(:iso8601)   if changes_include?('due_date')
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(false)
+        payload[:attachments]      = saved_attachments_data
+        payload.compact
+      end
+
+      def serialize
+        payload[:extRefId]         = issue.id
+        payload[:extTktSrc]        = 'REDMINE'
+        payload[:groupId]          = config.group_id.presence
+        payload[:title]            = issue.subject
+        payload[:description]      = issue.description
+        payload[:ticketStatusId]   = issue.status_id
+        payload[:ticketPriorityId] = issue.priority_id
+        payload[:dueDate]          = issue.due_date.try(:iso8601)
+        payload[:createdDate]      = issue.created_on.iso8601
+        payload[:lastModifiedDate] = issue.updated_on.iso8601
+        payload[:customFields]     = custom_fields_data(true)
         payload[:attachments]      = attachments_data
         payload.compact
       end
@@ -77,10 +97,18 @@ module Workforce
         data.compact
       end
 
-      def attachments_data
+      def saved_attachments_data
         return nil if issue.saved_attachments.blank?
 
         attachments = issue.saved_attachments.map do |attachment|
+          { id: attachment.id, name: attachment.filename, contentType: attachment.content_type }
+        end
+      end
+
+      def attachments_data
+        return nil if issue.attachments.blank?
+
+        attachments = issue.attachments.map do |attachment|
           { id: attachment.id, name: attachment.filename, contentType: attachment.content_type }
         end
       end

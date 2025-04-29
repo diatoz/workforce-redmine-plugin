@@ -1,6 +1,6 @@
 module Workforce
   module Builders
-    class CommentPayloadBuilder
+    class CommentsDataBuilder
       attr_accessor :journal, :payload
 
       def initialize(journal)

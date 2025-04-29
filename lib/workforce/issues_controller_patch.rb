@@ -11,15 +11,15 @@ module Workforce
 
         config = @issue.workforce_config
         if params[:action] == 'create'
-          payload = Workforce::Builders::IssuePayloadBuilder.build_create_payload(@issue, config)
+          payload = Workforce::Builders::IssuesDataBuilder.build_create_payload(@issue, config)
           Workforce::Client.create_ticket(config, payload)
         elsif params[:action] == 'update' && @issue.has_workforce_notifiable_changes?
-          payload = Workforce::Builders::IssuePayloadBuilder.build_update_payload(@issue, config)
+          payload = Workforce::Builders::IssuesDataBuilder.build_update_payload(@issue, config)
           Workforce::Client.update_ticket(config, payload)
         end
         return unless @issue.current_journal.present? && @issue.current_journal.notes.present?
 
-        payload = Workforce::Builders::CommentPayloadBuilder.build_create_payload(@issue.current_journal)
+        payload = Workforce::Builders::CommentsDataBuilder.build_create_payload(@issue.current_journal)
         Workforce::Client.create_comment(config, payload)
       rescue => e
         Workforce.logger.error "Notification failed for issue id #{@issue.id}, reason: #{e.message}"

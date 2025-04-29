@@ -1,6 +1,6 @@
 module Workforce
   module Builders
-    class CustomFieldPayloadBuilder
+    class CustomFieldsDataBuilder
       attr_accessor :field, :payload
 
       def initialize(field)
@@ -8,11 +8,11 @@ module Workforce
         @payload = {}
       end
 
-      def self.build_index_payload(field)
-        new(field).build_index_payload
+      def self.serialize(field)
+        new(field).serialize
       end
 
-      def build_index_payload
+      def serialize
         return nil unless field.workforce_supported_field?
 
         payload[:id]             = field.id
