@@ -1,3 +1,8 @@
+## 1.1.4
+  * Generalized the Builder Classes APIs
+  * Set locale to 'en' while generating the issue payload
+  * Exposed a new API to fetch issue data
+
 ## 1.1.3
 
 * Added support for custom fields of type boolean and list.
