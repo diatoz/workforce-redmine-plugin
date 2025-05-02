@@ -11,10 +11,10 @@ module Workforce
 
         config = @journal.journalized.workforce_config
         if @journal.destroyed?
-          payload = Workforce::Builders::CommentPayloadBuilder.build_destroy_payload(@journal)
+          payload = Workforce::Builders::CommentsDataBuilder.build_destroy_payload(@journal)
           Workforce::Client.destroy_comment(config, payload)
         else
-          payload = Workforce::Builders::CommentPayloadBuilder.build_update_payload(@journal)
+          payload = Workforce::Builders::CommentsDataBuilder.build_update_payload(@journal)
           Workforce::Client.update_comment(config, payload)
         end
       rescue => e
