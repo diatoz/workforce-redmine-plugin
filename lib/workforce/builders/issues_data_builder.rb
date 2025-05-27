@@ -33,7 +33,7 @@ module Workforce
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(true)
-        payload[:attachments]      = saved_attachments_data
+        payload[:attachments]      = attachments_data
         payload.compact
       end
 
