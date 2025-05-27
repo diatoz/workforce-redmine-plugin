@@ -30,7 +30,7 @@ module Workforce
   mattr_accessor :logger
 
   def self.apply_patches
-    patch_dir = File.expand_path('lib/workforce/patches', __dir__)
+    patch_dir = Rails.root.join('plugins', 'workforce', 'lib', 'workforce', 'patches')
     Dir.glob("#{patch_dir}/**/*.rb").sort.each do |file|
       require file
     end
