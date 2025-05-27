@@ -30,12 +30,9 @@ module Workforce
   mattr_accessor :logger
 
   def self.apply_patches
-    User.include Workforce::UserPatch
-    Issue.include Workforce::IssuePatch
-    Project.include Workforce::ProjectPatch
-    CustomField.include Workforce::CustomFieldPatch
-    IssuesController.include Workforce::IssuesControllerPatch
-    JournalsController.include Workforce::JournalsControllerPatch
-    ProjectsController.helper Workforce::ProjectSettingTabsPatch
+    patch_dir = File.expand_path('lib/workforce/patches', __dir__)
+    Dir.glob("#{patch_dir}/**/*.rb").sort.each do |file|
+      require file
+    end
   end
 end
