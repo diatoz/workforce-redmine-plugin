@@ -1,5 +1,3 @@
-require_dependency 'issues_controller'
-
 module Workforce
   module Patches
     module IssuesControllerPatch

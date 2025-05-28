@@ -1,5 +1,3 @@
-require_dependency 'issue'
-
 module Workforce
   module Patches
     module IssuePatch
@@ -7,8 +5,6 @@ module Workforce
 
       included do
         has_one :workforce_config, class_name: "WorkforceConfiguration", through: :project
-
-        after_commit :notify_helpdesk_ticket_to_workforce, on: :create
 
         def notify_helpdesk_ticket_to_workforce
           return unless workforce_notifiable? || is_ticket?

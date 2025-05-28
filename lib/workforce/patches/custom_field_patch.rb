@@ -1,5 +1,3 @@
-require_dependency 'custom_field'
-
 module Workforce
   module Patches
     module CustomFieldPatch

@@ -1,5 +1,3 @@
-require_dependency 'journals_controller'
-
 module Workforce
   module Patches
     module JournalsControllerPatch

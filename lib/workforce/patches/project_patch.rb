@@ -1,5 +1,3 @@
-require_dependency 'project'
-
 module Workforce
   module Patches
     module ProjectPatch
