@@ -1,12 +1,15 @@
+## 1.1.5
+  * Added support to reflect issues in Workforce that are created via email.
+
 ## 1.1.4
-  * Generalized the Builder Classes APIs
-  * Set locale to 'en' while generating the issue payload
-  * Exposed a new API to fetch issue data
+  * Generalized the Builder Classes APIs.
+  * Set locale to 'en' while generating the issue payload.
+  * Exposed a new API to fetch issue data.
 
 ## 1.1.3
 
 * Added support for custom fields of type boolean and list.
-* For new projects, all supported custom fields will be enabled by default
+* For new projects, all supported custom fields will be enabled by default.
 
 ## 1.1.2
 
