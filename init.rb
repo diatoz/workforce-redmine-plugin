@@ -12,6 +12,13 @@ Redmine::Plugin.register :workforce do
 
   permission :manage_workforce_configuration, workforce_configurations: [:create, :update]
 
-  Workforce.apply_patches
   Workforce.logger = Logger.new(Rails.root.join('log/workforce.log'), 5, 30 * 1024 * 1024)
+end
+
+if (Rails.configuration.respond_to?(:autoloader) && Rails.configuration.autoloader == :zeitwerk) || Rails.version > '7.0'
+  Rails.autoloaders.each { |loader| loader.ignore(File.dirname(__FILE__) + '/lib/workforce/patches') }
+end
+
+Rails.configuration.after_initialize do
+  Workforce.apply_patches
 end
