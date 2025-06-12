@@ -11,6 +11,14 @@
   <%= text_field_tag 'settings[ticket_endpoint]', @settings["ticket_endpoint"], :size => 60 %>
 </p>
 <p>
-  <%= content_tag(:label, l(:workforce_api_key)) %>
-  <%= text_area_tag 'settings[api_key]', @settings["api_key"], :rows => 4 %>
+  <%= content_tag(:label, l(:workforce_ticket_api_key)) %>
+  <%= text_area_tag 'settings[ticket_api_key]', @settings["ticket_api_key"], :rows => 4 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_user_endpoint)) %>
+  <%= text_field_tag 'settings[user_endpoint]', @settings["user_endpoint"], :size => 60 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_user_api_key)) %>
+  <%= text_area_tag 'settings[user_api_key]', @settings["user_api_key"], :rows => 4 %>
 </p>

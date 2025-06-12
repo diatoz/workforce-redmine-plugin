@@ -7,24 +7,23 @@ class WorkforceConfiguration < ActiveRecord::Base
 
   enum project_type: { helpdesk: 0 }
 
+  CONFIG_KEYS = %i[
+    domain
+    email
+    ticket_endpoint
+    ticket_api_key
+    user_endpoint
+    user_api_key
+  ].freeze
+
+  CONFIG_KEYS.each do |key|
+    define_method(key) do
+      global_config[key]
+    end
+  end
+
   def global_config
     @global_config ||= Setting.plugin_workforce
-  end
-
-  def domain
-    global_config['domain']
-  end
-
-  def email
-    global_config['email']
-  end
-
-  def ticket_endpoint
-    global_config['ticket_endpoint']
-  end
-
-  def default_api_key
-    global_config['api_key']
   end
 
   def notifiable_issue_fields
