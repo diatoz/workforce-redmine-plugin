@@ -29,6 +29,7 @@ module Workforce
         payload[:description]      = issue.description
         payload[:ticketStatusId]   = issue.status_id
         payload[:ticketPriorityId] = issue.priority_id
+        payload[:assigneeId]       = issue.assigned_to_id
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
@@ -39,11 +40,12 @@ module Workforce
 
       def build_update_payload
         payload[:extRefId]         = issue.id
-        payload[:title]            = issue.subject                  if changes_include?('subject')
-        payload[:description]      = issue.description              if changes_include?('description')
-        payload[:ticketStatusId]   = issue.status_id                if changes_include?('status_id')
-        payload[:ticketPriorityId] = issue.priority_id              if changes_include?('priority_id')
-        payload[:dueDate]          = issue.due_date.try(:iso8601)   if changes_include?('due_date')
+        payload[:title]            = issue.subject                  if field_changed?('subject')
+        payload[:description]      = issue.description              if field_changed?('description')
+        payload[:ticketStatusId]   = issue.status_id                if field_changed?('status_id')
+        payload[:ticketPriorityId] = issue.priority_id              if field_changed?('priority_id')
+        payload[:dueDate]          = issue.due_date.try(:iso8601)   if field_changed?('due_date')
+        payload[:assigneeId]       = issue.assigned_to_id           if field_changed?('assigned_to_id')  
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(false)
         payload[:attachments]      = saved_attachments_data
@@ -57,6 +59,7 @@ module Workforce
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
         payload[:ticketStatusId]   = issue.status_id
+        payload[:assigneeId]       = issue.assigned_to_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
@@ -68,7 +71,7 @@ module Workforce
 
       def custom_fields_data(create_payload)
         issue_attributes = ISSUE_SUPPORTED_ATTRIBUTES.select { |attribute| notifiable_issue_field?(attribute) }
-        notifiable_issue_attributes = create_payload ? issue_attributes : issue_attributes.select { |attribute| changes_include?(attribute) }
+        notifiable_issue_attributes = create_payload ? issue_attributes : issue_attributes.select { |attribute| field_changed?(attribute) }
         data = notifiable_issue_attributes.map do |attribute|
           {
             name: Issue.human_attribute_name(attribute, locale: :en),
@@ -76,7 +79,7 @@ module Workforce
             fieldFormat: ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING[attribute]
           }
         end
-        if create_payload || changes_include?('project_id')
+        if create_payload || field_changed?('project_id')
           ancestors = issue.project.ancestors.pluck(:name) << issue_attribute_value("project_id")
           data << {
             name: "Project Path",
@@ -113,7 +116,7 @@ module Workforce
         end
       end
 
-      def changes_include?(key)
+      def field_changed?(key)
         issue.previous_changes.include?(key)
       end
 
