@@ -1,3 +1,6 @@
+## 1.1.6
+  * Added integration to automatically create Workforce users for newly created Redmine users.
+
 ## 1.1.5
   * Added support to reflect issues in Workforce that are created via email.
 
