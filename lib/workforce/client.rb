@@ -2,95 +2,179 @@ module Workforce
   class Client
     class << self
       def create_ticket(config, payload)
-        log_request('create ticket', payload[:extRefId])
-        url = URI(config.ticket_endpoint)
-        https = Net::HTTP.new(url.host, url.port)
-        https.use_ssl = true
-        request = build_post_request(url, config, payload.to_json)
-        response = https.request(request)
-        log_response('create ticket', payload[:extRefId], request, response)
+        execute_request(
+          method: :post,
+          endpoint: config.ticket_endpoint,
+          api_key: config.ticket_api_key,
+          payload: payload,
+          reference_id: payload[:extRefId],
+          action_name: 'create ticket'
+        )
       end
 
       def update_ticket(config, payload)
-        log_request('update ticket', payload[:extRefId])
-        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}")
-        https = Net::HTTP.new(url.host, url.port)
-        https.use_ssl = true
-        request = build_patch_request(url, config, payload.to_json)
-        response = https.request(request)
-        log_response('update ticket', payload[:extRefId], request, response)
+        execute_request(
+          method: :patch,
+          endpoint: "#{config.ticket_endpoint}/#{payload[:extRefId]}",
+          api_key: config.ticket_api_key,
+          payload: payload,
+          reference_id: payload[:extRefId],
+          action_name: 'update ticket'
+        )
       end
 
       def create_comment(config, payload)
-        log_request('create comment', payload[:messageId])
-        url = URI("#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages")
-        https = Net::HTTP.new(url.host, url.port)
-        https.use_ssl = true
-        request = build_post_request(url, config, payload.slice(:messageId, :message).to_json)
-        response = https.request(request)
-        log_response('create comment', payload[:messageId], request, response)
+        execute_request(
+          method: :post,
+          endpoint: "#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages",
+          api_key: config.ticket_api_key,
+          payload: payload.slice(:messageId, :message),
+          reference_id: payload[:messageId],
+          action_name: 'create comment'
+        )
       end
 
       def update_comment(config, payload)
-        log_request('update comment', payload[:messageId])
-        url = URI("#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}")
-        https = Net::HTTP.new(url.host, url.port)
-        https.use_ssl = true
-        request = build_patch_request(url, config, payload[:message])
-        response = https.request(request)
-        log_response('update comment', payload[:messageId], request, response)
+        execute_request(
+          method: :patch,
+          endpoint: "#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}",
+          api_key: config.ticket_api_key,
+          payload: { message: payload[:message] },
+          reference_id: payload[:messageId],
+          action_name: 'update comment'
+        )
       end
 
       def destroy_comment(config, payload)
-        log_request('destroy comment', payload[:messageId])
-        url = URI("#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}")
-        https = Net::HTTP.new(url.host, url.port)
-        https.use_ssl = true
-        request = build_destroy_request(url, config, '')
-        response = https.request(request)
-        log_response('destroy comment', payload[:messageId], request, response)
+        execute_request(
+          method: :delete,
+          endpoint: "#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}",
+          api_key: config.ticket_api_key,
+          payload: nil,
+          reference_id: payload[:messageId],
+          action_name: 'destroy comment'
+        )
+      end
+
+      def create_user(config, payload)
+        execute_request(
+          method: :post,
+          endpoint: config.user_endpoint,
+          api_key: config.user_api_key,
+          payload: payload,
+          reference_id: payload[:externalReferenceId],
+          action_name: 'create user',
+          include_client: false
+        )
+      end
+
+      def update_user(config, payload)
+        execute_request(
+          method: :patch,
+          endpoint: "#{config.user_endpoint}/#{payload[:externalReferenceId]}",
+          api_key: config.user_api_key,
+          payload: payload,
+          reference_id: payload[:externalReferenceId],
+          action_name: 'update user',
+          include_client: false
+        )
       end
 
       private
 
-      def build_post_request(url, config, payload)
-        request = Net::HTTP::Post.new(url)
-        request['X-API-Key'] = config.default_api_key
-        request['X-Client'] = url.host.split('.').first
-        request.content_type = 'application/json'
-        request.body = payload
-        request
+      def execute_request(options = {})
+        method = options[:method]
+        endpoint = options[:endpoint]
+        api_key = options[:api_key]
+        payload = options[:payload]
+        reference_id = options[:reference_id]
+        action_name = options[:action_name]
+        include_client = options.fetch(:include_client, true)
+
+        log_request(action_name, reference_id)
+
+        url = URI(endpoint)
+        client_name = include_client ? url.host.split('.').first : nil
+        response = make_http_request(method, url, api_key, payload, client_name)
+
+        log_response(action_name, reference_id, payload, response)
+        response
       end
 
-      def build_patch_request(url, config, payload)
-        request = Net::HTTP::Patch.new(url)
-        request['X-API-Key'] = config.default_api_key
-        request['X-Client'] = url.host.split('.').first
-        request.content_type = 'application/merge-patch+json'
-        request.body = payload
-        request
+      def make_http_request(method, url, api_key, payload, client_name)
+        https = Net::HTTP.new(url.host, url.port)
+        https.use_ssl = true
+        request = create_request_object(method, url)
+        set_headers(request, api_key, client_name)
+        set_body(request, payload) if payload_required?(method, payload)
+        https.request(request)
       end
 
-      def build_destroy_request(url, config, payload)
-        request = Net::HTTP::Delete.new(url)
-        request['X-API-Key'] = config.default_api_key
-        request['X-Client'] = url.host.split('.').first
-        request.content_type = 'application/json'
-        request.body = payload if payload.present?
-        request
+      def create_request_object(method, url)
+        case method
+        when :post
+          Net::HTTP::Post.new(url)
+        when :patch
+          Net::HTTP::Patch.new(url)
+        when :delete
+          Net::HTTP::Delete.new(url)
+        else
+          raise ArgumentError, "Unsupported HTTP method: #{method}"
+        end
+      end
+
+      def set_headers(request, api_key, client_name)
+        request['X-API-Key'] = api_key
+        request['X-Client'] = client_name if client_name
+        request.content_type = determine_content_type(request)
+      end
+
+      def determine_content_type(request)
+        case request
+        when Net::HTTP::Patch
+          'application/merge-patch+json'
+        else
+          'application/json'
+        end
+      end
+
+      def set_body(request, payload)
+        request.body = payload.is_a?(String) ? payload : payload.to_json
+      end
+
+      def payload_required?(method, payload)
+        [:post, :patch].include?(method) || (method == :delete && payload&.present?)
       end
 
       def log_request(action, id)
         Workforce.logger.info("Requesting to #{action} for #{id}")
       end
 
-      def log_response(action, id, request, response)
-        Workforce.logger.info("Got #{response.try(:code)} response for #{action} request for #{id}")
-        return if ["200", "201"].include?(response.code.to_s)
+      def log_response(action, id, request_payload, response)
+        Workforce.logger.info("Got #{response&.code} response for #{action} request for #{id}")
+        if successful_response?(response)
+          # log_details(request_payload, response)
+          return true
+        else
+          log_error_details(request_payload, response)
+        end
+        return true
+      end
 
-        Workforce.logger.error "request-body: #{request.body.inspect}"
-        Workforce.logger.error "response-body: #{response.body.inspect}"
-        Workforce.logger.error "response-message: #{response.message.inspect}"
+      def successful_response?(response)
+        %w[200 201 204].include?(response&.code)
+      end
+
+      def log_error_details(request_payload, response)
+        Workforce.logger.error "request-body: #{request_payload.inspect}"
+        Workforce.logger.error "response-body: #{response&.body.inspect}"
+        Workforce.logger.error "response-message: #{response&.message.inspect}"
+      end
+
+      def log_details(request_payload, response)
+        Workforce.logger.info "request-body: #{request_payload.inspect}"
+        Workforce.logger.info "response-body: #{response&.body.inspect}"
+        Workforce.logger.info "response-message: #{response&.message.inspect}"
       end
     end
   end
