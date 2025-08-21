@@ -25,6 +25,7 @@ module Workforce
         payload[:firstName] = user.firstname
         payload[:lastName] = user.lastname
         payload[:email] = user.mail
+        payload[:apiToken] = user.api_key
         payload.compact
       end
 

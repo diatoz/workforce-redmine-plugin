@@ -1,7 +1,7 @@
 module Workforce
   class CustomApiController < ApplicationController
     before_action :authorize_workforce_user
-    accept_api_auth :custom_fields, :create_journal, :issues
+    accept_api_auth :custom_fields, :create_journal, :issues, :user_token
 
     def custom_fields
       data = IssueCustomField.all.map do |field|
@@ -34,6 +34,17 @@ module Workforce
       head :unprocessable_entity
     end
 
+    def user_token
+      head :bad_request and return if params[:id].blank?
+
+      user = User.find(params[:id])
+      render json: { user_id: user.id, api_token: user.api_key }
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+    rescue StandardError
+      head :unprocessable_entity
+    end
+    
     private
 
     def authorize_workforce_user
