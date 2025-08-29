@@ -8,6 +8,7 @@ module Workforce
           api_key: config.ticket_api_key,
           payload: payload,
           reference_id: payload[:extRefId],
+          user_id: payload[:createdById],
           action_name: 'create ticket'
         )
       end
@@ -19,6 +20,7 @@ module Workforce
           api_key: config.ticket_api_key,
           payload: payload,
           reference_id: payload[:extRefId],
+          user_id: payload[:lastModifiedId],
           action_name: 'update ticket'
         )
       end
@@ -30,6 +32,7 @@ module Workforce
           api_key: config.ticket_api_key,
           payload: payload.slice(:messageId, :message),
           reference_id: payload[:messageId],
+          user_id: payload[:createdById],
           action_name: 'create comment'
         )
       end
@@ -41,6 +44,7 @@ module Workforce
           api_key: config.ticket_api_key,
           payload: { message: payload[:message] },
           reference_id: payload[:messageId],
+          user_id: payload[:lastModifiedId],
           action_name: 'update comment'
         )
       end
@@ -52,6 +56,7 @@ module Workforce
           api_key: config.ticket_api_key,
           payload: nil,
           reference_id: payload[:messageId],
+          user_id: payload[:deletedById],
           action_name: 'destroy comment'
         )
       end
@@ -63,8 +68,7 @@ module Workforce
           api_key: config.user_api_key,
           payload: payload,
           reference_id: payload[:externalReferenceId],
-          action_name: 'create user',
-          include_client: false
+          action_name: 'create user'
         )
       end
 
@@ -75,8 +79,7 @@ module Workforce
           api_key: config.user_api_key,
           payload: payload,
           reference_id: payload[:externalReferenceId],
-          action_name: 'update user',
-          include_client: false
+          action_name: 'update user'
         )
       end
 
@@ -90,22 +93,23 @@ module Workforce
         reference_id = options[:reference_id]
         action_name = options[:action_name]
         include_client = options.fetch(:include_client, true)
+        user_id = options.fetch(:user_id, nil)
 
         log_request(action_name, reference_id)
 
         url = URI(endpoint)
         client_name = include_client ? url.host.split('.').first : nil
-        response = make_http_request(method, url, api_key, payload, client_name)
+        response = make_http_request(method, url, api_key, payload, client_name, user_id)
 
         log_response(action_name, reference_id, payload, response)
         response
       end
 
-      def make_http_request(method, url, api_key, payload, client_name)
+      def make_http_request(method, url, api_key, payload, client_name, user_id)
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = create_request_object(method, url)
-        set_headers(request, api_key, client_name)
+        set_headers(request, api_key, client_name, user_id)
         set_body(request, payload) if payload_required?(method, payload)
         https.request(request)
       end
@@ -123,9 +127,10 @@ module Workforce
         end
       end
 
-      def set_headers(request, api_key, client_name)
+      def set_headers(request, api_key, client_name, user_id)
         request['X-API-Key'] = api_key
         request['X-Client'] = client_name if client_name
+        request['X-User-Id'] = user_id if user_id
         request.content_type = determine_content_type(request)
       end
 

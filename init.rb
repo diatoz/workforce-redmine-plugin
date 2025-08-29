@@ -4,7 +4,7 @@ Redmine::Plugin.register :workforce do
   name 'Workforce plugin'
   author 'Workforce'
   description 'Workforce plugin for Redmine'
-  version '1.1.6'
+  version '1.2.0'
   url 'https://github.com/diatoz/workforce-redmine-plugin'
   author_url 'https://e2eworkforce.com/'
 

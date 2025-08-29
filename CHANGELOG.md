@@ -1,3 +1,11 @@
+## 1.2.0
+  * Auto-generate personal API tokens for newly created Redmine users
+  * Exposed custom API endpoint to fetch user tokens
+  * Introduced `X-Notify-Workforce` header to prevent Helpdesk → Redmine → Helpdesk notification loops
+  * Improved notification handling with RequestStore for selective updates
+  * Extended issue payload with `createdById`, `createdByEmail`, `lastModifiedId`, `lastModifiedEmail`
+  * Extended journal payload with `createdBy`, `lastModifiedBy`, and `deletedBy` details
+
 ## 1.1.6
   * Added integration to automatically create Workforce users for newly created Redmine users.
 

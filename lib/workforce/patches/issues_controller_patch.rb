@@ -8,7 +8,7 @@ module Workforce
 
         def notify_workforce
           return if User.current.workforce_user?
-          return unless RequestStore.exist?(:notify_workforce) && @issue.workforce_notifiable?
+          return unless RequestStore.store[:notify_workforce] && @issue.workforce_notifiable?
 
           config = @issue.workforce_config
           if params[:action] == 'create'
