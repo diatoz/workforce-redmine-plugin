@@ -1,7 +1,6 @@
 module Workforce
   class CustomApiController < ApplicationController
-    before_action :authorize_workforce_user
-    skip_before_action :authorize_workforce_user, only: [:create_journal, :issues]
+    before_action :authorize_workforce_user, only: [:custom_fields, :user_token]
     accept_api_auth :custom_fields, :create_journal, :issues, :user_token
 
     def custom_fields
