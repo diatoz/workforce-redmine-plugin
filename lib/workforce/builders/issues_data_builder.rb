@@ -35,6 +35,8 @@ module Workforce
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(true)
         payload[:attachments]      = attachments_data
+        payload[:createdById]      = issue.author&.id
+        payload[:createdByEmail]   = issue.author&.mail
         payload.compact
       end
 
@@ -49,6 +51,8 @@ module Workforce
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(false)
         payload[:attachments]      = saved_attachments_data
+        payload[:lastModifiedId]    = issue.last_updated_by&.id
+        payload[:lastModifiedEmail] = issue.last_updated_by&.mail
         payload.compact
       end
 
