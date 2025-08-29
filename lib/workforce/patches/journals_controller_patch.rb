@@ -7,7 +7,8 @@ module Workforce
         after_action :notify_workforce, :only => [:update]
 
         def notify_workforce
-          return if User.current.workforce_user? || !RequestStore.store[:notify_workforce]
+          return if User.current.workforce_user?
+          return unless RequestStore.store[:notify_workforce]
           return unless @journal.journalized.is_a?(Issue) && @journal.journalized.workforce_notifiable?
 
           config = @journal.journalized.workforce_config
