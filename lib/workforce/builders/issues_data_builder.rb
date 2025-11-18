@@ -28,6 +28,7 @@ module Workforce
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
         payload[:ticketStatusId]   = issue.status_id
+        payload[:ticketTrackerId]  = issue.tracker_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:assigneeId]       = issue.assigned_to_id
         payload[:dueDate]          = issue.due_date.try(:iso8601)
@@ -45,6 +46,7 @@ module Workforce
         payload[:title]            = issue.subject                  if field_changed?('subject')
         payload[:description]      = issue.description              if field_changed?('description')
         payload[:ticketStatusId]   = issue.status_id                if field_changed?('status_id')
+        payload[:ticketTrackerId]  = issue.tracker_id               if field_changed?('tracker_id')
         payload[:ticketPriorityId] = issue.priority_id              if field_changed?('priority_id')
         payload[:dueDate]          = issue.due_date.try(:iso8601)   if field_changed?('due_date')
         payload[:assigneeId]       = issue.assigned_to_id           if field_changed?('assigned_to_id')  
@@ -63,6 +65,7 @@ module Workforce
         payload[:title]            = issue.subject
         payload[:description]      = issue.description
         payload[:ticketStatusId]   = issue.status_id
+        payload[:ticketTrackerId]  = issue.tracker_id
         payload[:assigneeId]       = issue.assigned_to_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:dueDate]          = issue.due_date.try(:iso8601)
