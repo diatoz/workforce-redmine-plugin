@@ -83,6 +83,28 @@ module Workforce
         )
       end
 
+      def create_group(config, payload)
+        execute_request(
+          method: :post,
+          endpoint: config.group_endpoint,
+          api_key: config.group_api_key,
+          payload: payload,
+          reference_id: payload[:extRefId],
+          action_name: 'create group'
+        )
+      end
+
+      def update_group(config, payload)
+        execute_request(
+          method: :patch,
+          endpoint: "#{config.group_endpoint}/#{payload[:extRefId]}",
+          api_key: config.group_api_key,
+          payload: payload,
+          reference_id: payload[:extRefId],
+          action_name: 'update group'
+        )
+      end
+
       private
 
       def execute_request(options = {})

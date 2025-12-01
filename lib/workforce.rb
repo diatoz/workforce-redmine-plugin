@@ -15,7 +15,7 @@ module Workforce
     "user"  => nil,
     "version" => nil
   }.freeze
-  ISSUE_MANDATORY_ATTRIBUTES = %w[subject description status_id priority_id due_date].freeze
+  ISSUE_MANDATORY_ATTRIBUTES = %w[subject description status_id priority_id assigned_to_id due_date].freeze
   ISSUE_SUPPORTED_ATTRIBUTES = %w[project_id author_id start_date done_ratio estimated_hours].freeze
   ISSUE_SUPPORTED_ATTRIBUTES_FORMAT_MAPPING = {
     "project_id" => "TEXT",

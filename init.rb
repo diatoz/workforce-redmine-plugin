@@ -16,7 +16,9 @@ Redmine::Plugin.register :workforce do
       ticket_endpoint: '',
       ticket_api_key: '',
       user_endpoint: '',
-      user_api_key: ''
+      user_api_key: '',
+      group_endpoint: '',
+      group_api_key: ''
     }
   )
 

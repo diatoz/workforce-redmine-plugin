@@ -31,6 +31,7 @@ module Workforce
         payload[:ticketTrackerId]  = issue.tracker_id
         payload[:ticketPriorityId] = issue.priority_id
         payload[:assigneeId]       = issue.assigned_to_id
+        payload[:assigneeType]     = assignee_type
         payload[:dueDate]          = issue.due_date.try(:iso8601)
         payload[:createdDate]      = issue.created_on.iso8601
         payload[:lastModifiedDate] = issue.updated_on.iso8601
@@ -49,7 +50,10 @@ module Workforce
         payload[:ticketTrackerId]  = issue.tracker_id               if field_changed?('tracker_id')
         payload[:ticketPriorityId] = issue.priority_id              if field_changed?('priority_id')
         payload[:dueDate]          = issue.due_date.try(:iso8601)   if field_changed?('due_date')
-        payload[:assigneeId]       = issue.assigned_to_id           if field_changed?('assigned_to_id')  
+        if field_changed?('assigned_to_id')
+          payload[:assigneeId]   = issue.assigned_to_id
+          payload[:assigneeType] = assignee_type
+        end
         payload[:lastModifiedDate] = issue.updated_on.iso8601
         payload[:customFields]     = custom_fields_data(false)
         payload[:attachments]      = saved_attachments_data
@@ -147,6 +151,17 @@ module Workforce
           issue.assignee_email
         else
           issue.send(attribute.to_sym)
+        end
+      end
+
+      def assignee_type
+        return nil if issue.assigned_to.nil?
+        if issue.assigned_to.is_a?(User)
+          "USER"
+        elsif issue.assigned_to.is_a?(Group)
+          "GROUP"
+        else
+          nil
         end
       end
 
