@@ -1,3 +1,8 @@
+## 1.3.0
+  * Issue Tracker updates in Redmine will now be reflected in Workforce tickets, and Workforce changes will sync back into Redmine.
+  * Assigning a Redmine issue to a group will now correctly sync to Workforce, and the Workforce ticket assignee (group/user) will sync back to Redmine.
+  * Group creation and updates in Redmine will now be reflected in Workforce, and groups updated in Workforce will sync back into Redmine.
+
 ## 1.2.0
   * Auto-generate personal API tokens for newly created Redmine users
   * Exposed custom API endpoint to fetch user tokens
