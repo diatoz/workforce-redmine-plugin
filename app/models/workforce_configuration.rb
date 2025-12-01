@@ -14,6 +14,8 @@ class WorkforceConfiguration < ActiveRecord::Base
     ticket_api_key
     user_endpoint
     user_api_key
+    group_endpoint
+    group_api_key
   ].freeze
 
   CONFIG_KEYS.each do |key|

@@ -5,6 +5,8 @@ en:
   workforce_ticket_api_key: Ticket Creation Api Key
   workforce_user_endpoint: User Creation Endpoint
   workforce_user_api_key: User Creation Api Key
+  workforce_group_endpoint: Group Creation Endpoint
+  workforce_group_api_key: Group Creation Api Key
 
   workforce_project_tab: Workforce
   workforce_project_api_key: API Key
@@ -12,7 +14,7 @@ en:
   workforce_project_enable: Enable Workforce
   workforce_settings_update_success: Workforce Project Settings Updated Successfully
   workforce_settings_update_failed: Workforce Project Settings Update Failed
-  workforce_project_group_id: 'Group Id'
+  workforce_project_group_id: "Group Id"
   workforce_notifiable_custom_fields: Notifiable Custom Fields
   workforce_notifiable_issue_fields: Notifiable Issue Fields
   workforce_general_settings: General Settings

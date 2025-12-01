@@ -4,7 +4,7 @@ Redmine::Plugin.register :workforce do
   name 'Workforce plugin'
   author 'Workforce'
   description 'Workforce plugin for Redmine'
-  version '1.2.0'
+  version '1.3.0'
   url 'https://github.com/diatoz/workforce-redmine-plugin'
   author_url 'https://e2eworkforce.com/'
 
@@ -16,7 +16,9 @@ Redmine::Plugin.register :workforce do
       ticket_endpoint: '',
       ticket_api_key: '',
       user_endpoint: '',
-      user_api_key: ''
+      user_api_key: '',
+      group_endpoint: '',
+      group_api_key: ''
     }
   )
 

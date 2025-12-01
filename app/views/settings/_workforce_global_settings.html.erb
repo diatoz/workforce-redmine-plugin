@@ -22,3 +22,11 @@
   <%= content_tag(:label, l(:workforce_user_api_key)) %>
   <%= text_area_tag 'settings[user_api_key]', @settings["user_api_key"], :rows => 4 %>
 </p>
+<p>
+  <%= content_tag(:label, l(:workforce_group_endpoint)) %>
+  <%= text_field_tag 'settings[group_endpoint]', @settings["group_endpoint"], :size => 60 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_group_api_key)) %>
+  <%= text_area_tag 'settings[group_api_key]', @settings["group_api_key"], :rows => 4 %>
+</p>
