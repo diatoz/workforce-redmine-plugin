@@ -39,6 +39,8 @@ module Workforce
         payload[:attachments]      = attachments_data
         payload[:createdById]      = issue.author&.id
         payload[:createdByEmail]   = issue.author&.mail
+        payload[:reportedUser]     = reported_user_data
+        payload[:channel]          = issue_channel
         payload.compact
       end
 
@@ -160,6 +162,25 @@ module Workforce
           "USER"
         elsif issue.assigned_to.is_a?(Group)
           "GROUP"
+        else
+          nil
+        end
+      end
+
+      def reported_user_data
+        # Helpdesk PRO stores customer name/email directly on the issue
+        name  = issue.try(:customer).try(:name)
+        email = issue.try(:customer).try(:email)
+        return nil if name.blank? && email.blank?
+        {
+          name: name,
+          email: email
+        }
+      end
+
+      def issue_channel
+        if issue.try(:helpdesk_ticket).present?
+          "EMAIL"
         else
           nil
         end
