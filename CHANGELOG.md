@@ -1,3 +1,7 @@
+## 1.3.1
+  * Customer replies received via Helpdesk email are now synchronized to Workforce as ticket comments.
+  * Incoming customer emails, agent email replies, and internal notes are correctly identified and reflected in Workforce.
+
 ## 1.3.0
   * Issue Tracker updates in Redmine will now be reflected in Workforce tickets, and Workforce changes will sync back into Redmine.
   * Assigning a Redmine issue to a group will now correctly sync to Workforce, and the Workforce ticket assignee (group/user) will sync back to Redmine.
