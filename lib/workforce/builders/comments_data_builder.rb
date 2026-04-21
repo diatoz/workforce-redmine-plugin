@@ -24,6 +24,7 @@ module Workforce
         payload[:extRefId] = journal.journalized_id
         payload[:messageId] = journal.id
         payload[:message] = journal.notes
+        payload[:privateNotes] = journal.private_notes
         payload[:createdById] = journal.user_id
         payload
       end
@@ -31,6 +32,7 @@ module Workforce
       def build_update_payload
         payload[:messageId] = journal.id
         payload[:message] = journal.notes
+        payload[:privateNotes] = journal.private_notes
         payload[:lastModifiedId] = journal.updated_by_id
         payload
       end

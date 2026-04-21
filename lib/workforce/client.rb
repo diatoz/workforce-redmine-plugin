@@ -30,7 +30,7 @@ module Workforce
           method: :post,
           endpoint: "#{config.ticket_endpoint}/#{payload[:extRefId]}/ticket-messages",
           api_key: config.ticket_api_key,
-          payload: payload.slice(:messageId, :message),
+          payload: payload,
           reference_id: payload[:messageId],
           user_id: payload[:createdById],
           action_name: 'create comment'
@@ -42,7 +42,7 @@ module Workforce
           method: :patch,
           endpoint: "#{config.ticket_endpoint}/ticket-messages/#{payload[:messageId]}",
           api_key: config.ticket_api_key,
-          payload: { message: payload[:message] },
+          payload: payload,
           reference_id: payload[:messageId],
           user_id: payload[:lastModifiedId],
           action_name: 'update comment'

@@ -65,21 +65,7 @@ module Workforce
       end
 
       def serialize
-        payload[:extRefId]         = issue.id
-        payload[:extTktSrc]        = 'REDMINE'
-        payload[:groupId]          = config.group_id.presence
-        payload[:title]            = issue.subject
-        payload[:description]      = issue.description
-        payload[:ticketStatusId]   = issue.status_id
-        payload[:ticketTrackerId]  = issue.tracker_id
-        payload[:assigneeId]       = issue.assigned_to_id
-        payload[:ticketPriorityId] = issue.priority_id
-        payload[:dueDate]          = issue.due_date.try(:iso8601)
-        payload[:createdDate]      = issue.created_on.iso8601
-        payload[:lastModifiedDate] = issue.updated_on.iso8601
-        payload[:customFields]     = custom_fields_data(true)
-        payload[:attachments]      = attachments_data
-        payload.compact
+        build_create_payload
       end
 
       def custom_fields_data(create_payload)

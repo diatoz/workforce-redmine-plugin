@@ -15,6 +15,9 @@ module Workforce
 
       issue = Issue.find(params[:issue_id])
       journal = issue.init_journal(User.current, params[:notes])
+      if params[:private_notes].present?
+        journal.private_notes = true
+      end
       journal.save!
       render json: { message_id: journal.id }
     rescue ActiveRecord::RecordNotFound
