@@ -105,6 +105,30 @@ module Workforce
         )
       end
 
+      def create_ticket_relation(config, payload, user_id = nil)
+        execute_request(
+          method: :post,
+          endpoint: "#{config.bot_endpoint}/ticket_relations",
+          api_key: config.bot_api_key,
+          payload: payload,
+          reference_id: payload[:issue_id],
+          user_id: user_id.to_s,
+          action_name: 'create ticket relation'
+        )
+      end
+
+      def destroy_ticket_relation(config, relation_id, user_id = nil)
+        execute_request(
+          method: :delete,
+          endpoint: "#{config.bot_endpoint}/ticket_relations/#{relation_id}",
+          api_key: config.bot_api_key,
+          payload: nil,
+          reference_id: relation_id,
+          user_id: user_id.to_s,
+          action_name: 'destroy ticket relation'
+        )
+      end
+
       private
 
       def execute_request(options = {})

@@ -30,3 +30,11 @@
   <%= content_tag(:label, l(:workforce_group_api_key)) %>
   <%= text_area_tag 'settings[group_api_key]', @settings["group_api_key"], :rows => 4 %>
 </p>
+<p>
+  <%= content_tag(:label, l(:workforce_bot_endpoint)) %>
+  <%= text_field_tag 'settings[bot_endpoint]', @settings["bot_endpoint"], :size => 60 %>
+</p>
+<p>
+  <%= content_tag(:label, l(:workforce_bot_api_key)) %>
+  <%= text_area_tag 'settings[bot_api_key]', @settings["bot_api_key"], :rows => 4 %>
+</p>
