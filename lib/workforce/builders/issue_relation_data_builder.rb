@@ -1,32 +1,28 @@
 module Workforce
   module Builders
     class IssueRelationDataBuilder
-      attr_accessor :relation, :payload
+      attr_accessor :relations, :payload
 
-      def initialize(relation)
-        @relation = relation
+      def initialize(relations)
+        @relations = Array(relations)
         @payload = {}
       end
 
-      def self.build_create_payload(relation)
-        new(relation).build_create_payload
-      end
-
-      def self.build_destroy_payload(relation)
-        new(relation).build_destroy_payload
+      def self.build_create_payload(relations)
+        new(relations).build_create_payload
       end
 
       def build_create_payload
-        payload[:extRefId]      = relation.id.to_s
-        payload[:issue_id]      = relation.issue_id.to_s
-        payload[:issue_to_ids]  = [relation.issue_to_id.to_s]
-        payload[:relation_type] = relation.relation_type
-        payload[:delay]         = relation.delay
-        payload.compact
-      end
-
-      def build_destroy_payload
-        payload[:extRefId] = relation.id.to_s
+        payload[:issueId]  = relations.first.issue_from_id.to_s
+        payload[:relations] = relations.map do |r|
+          {
+            extRefId:      r.id.to_s,
+            issueId:       r.issue_from_id.to_s,
+            issueToId:     r.issue_to_id.to_s,
+            relationType:  r.relation_type,
+            delay:         r.delay
+          }.compact
+        end
         payload
       end
     end

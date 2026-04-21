@@ -111,7 +111,7 @@ module Workforce
           endpoint: "#{config.bot_endpoint}/ticket_relations",
           api_key: config.bot_api_key,
           payload: payload,
-          reference_id: payload[:extRefId],
+          reference_id: payload[:issue_id],
           user_id: user_id.to_s,
           action_name: 'create ticket relation'
         )
