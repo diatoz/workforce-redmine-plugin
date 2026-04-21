@@ -1,3 +1,7 @@
+## 1.4.0
+  * Private notes are now supported and synchronized to Workforce.
+  * Issue relations (create/delete) are synchronized with Workforce.
+
 ## 1.3.1
   * Customer replies received via Helpdesk email are now synchronized to Workforce as ticket comments.
   * Incoming customer emails, agent email replies, and internal notes are correctly identified and reflected in Workforce.
