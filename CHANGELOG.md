@@ -1,3 +1,6 @@
+## 1.5.0
+  * Fixed compatibility with Redmine 6.1.2 (Rails 7.2) — updated `serialize` syntax for `issue_notifiable_columns`.
+
 ## 1.4.0
   * Private notes are now supported and synchronized to Workforce.
   * Issue relations (create/delete) are synchronized with Workforce.

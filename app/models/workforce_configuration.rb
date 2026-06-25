@@ -3,7 +3,22 @@ class WorkforceConfiguration < ActiveRecord::Base
 
   before_save :sanitize_issue_notifiable_data
 
-  serialize :issue_notifiable_columns, ActiveSupport::HashWithIndifferentAccess
+  module IssueNotifiableColumnsCoder
+    def self.dump(obj)
+      return nil if obj.nil?
+      obj.to_h.to_json
+    end
+
+    def self.load(data)
+      return HashWithIndifferentAccess.new if data.nil? || data.empty?
+      parsed = data.start_with?('---') ? YAML.unsafe_load(data) : JSON.parse(data)
+      parsed.with_indifferent_access
+    rescue StandardError
+      HashWithIndifferentAccess.new
+    end
+  end
+
+  serialize :issue_notifiable_columns, coder: IssueNotifiableColumnsCoder
 
   enum project_type: { helpdesk: 0 }
 
