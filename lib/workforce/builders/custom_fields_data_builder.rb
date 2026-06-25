@@ -18,7 +18,7 @@ module Workforce
         payload[:id]             = field.id
         payload[:name]           = field.name
         payload[:fieldFormat]    = field.workforce_field_format
-        payload[:possibleValues] = field.possible_values.presence
+        payload[:possibleValues] = field.possible_values_options.map { |label, value| field.field_format == 'bool' ? value : label }.presence
         payload.compact
       end
     end
