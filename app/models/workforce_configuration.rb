@@ -18,7 +18,11 @@ class WorkforceConfiguration < ActiveRecord::Base
     end
   end
 
-  serialize :issue_notifiable_columns, coder: IssueNotifiableColumnsCoder
+  if Rails::VERSION::MAJOR >= 7
+    serialize :issue_notifiable_columns, coder: IssueNotifiableColumnsCoder
+  else
+    serialize :issue_notifiable_columns, IssueNotifiableColumnsCoder
+  end
 
   enum project_type: { helpdesk: 0 }
 

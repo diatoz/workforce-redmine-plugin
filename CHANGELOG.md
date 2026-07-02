@@ -1,3 +1,6 @@
+## 1.6.0
+  * Fixed backward compatibility issue with Redmine 5.1.4 (Rails 6.0) and Redmine 6.1.2 (Rails 7.2)
+
 ## 1.5.0
   * Fixed compatibility with Redmine 6.1.2 (Rails 7.2) — updated `serialize` syntax for `issue_notifiable_columns`.
 
