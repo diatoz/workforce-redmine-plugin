@@ -26,6 +26,7 @@ module Workforce
 
         def has_workforce_notifiable_changes?
           return true if saved_attachments.present?
+          return true if current_journal.present? && current_journal.details.any? { |detail| detail.prop_key == 'tracker_id' }
           return true if workforce_config.notifiable_issue_fields.any? { |column| previous_changes.include?(column) }
           return true if custom_values.any? { |field| workforce_config.notifiable_custom_field_ids.include?(field.custom_field_id) && field.value_previously_changed? }
 
