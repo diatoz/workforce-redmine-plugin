@@ -1,3 +1,6 @@
+## 1.7.0
+  * Enhanced Tracker field bidrectional update feature.
+
 ## 1.6.0
   * Fixed backward compatibility issue with Redmine 5.1.4 (Rails 6.0) and Redmine 6.1.2 (Rails 7.2)
 
